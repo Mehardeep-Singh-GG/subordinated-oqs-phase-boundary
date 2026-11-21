@@ -509,9 +509,12 @@ The self-contained Lean~4.16.0 formalization \leanid{Paper2\_Subordination.lean}
 \end{enumerate}
 }
 
-\textbf{Reproducibility Commands:} From the unzipped submission archive root:
+\textbf{Code \& Data Repository and Reproducibility Commands:} All numerical datasets, arbitrary-precision Python scripts, figure generators, and the pure Lean~4.16.0 formalization are openly archived at \url{https://github.com/Mehardeep-Singh-GG/subordinated-oqs-phase-boundary} (release \texttt{v1.0.0}). From the repository root (or unzipped submission archive):
 \begin{verbatim}
-cd lean_proofs && lake build DiamondProofs.Paper2_Subordination
+git clone https://github.com/Mehardeep-Singh-GG/subordinated-oqs-phase-boundary.git
+cd subordinated-oqs-phase-boundary
+cd lean_proofs && lake build DiamondProofs.Paper2_Subordination && cd ..
+python3 scripts/ci_audit.py
 python3 src/save_crosscheck_50digit.py
 python3 src/resolve_phase_boundary.py
 python3 src/find_mu_zero_boundary.py
@@ -521,7 +524,7 @@ python3 src/generate_hierarchy_data.py
 python3 src/friedrichs_lee_unitary.py
 python3 src/generate_figure_trajectories.py
 python3 src/make_figures.py
-tectonic paper2_subordinated_oqs.tex && tectonic supplement_paper2.tex
+cd manuscript && tectonic paper2_subordinated_oqs.tex && tectonic supplement_paper2.tex
 \end{verbatim}
 
 {\raggedright

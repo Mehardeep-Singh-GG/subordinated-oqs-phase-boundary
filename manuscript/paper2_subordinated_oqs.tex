@@ -612,8 +612,13 @@ Level~5 snapshots \& $\mathrm{Spohn} \subsetneq \mathrm{CPTP}$ & \leanid{sep\_pd
 By anchoring inverse $\mu$-stable operational-time subordination in an exact bipartite Markovian random-telegraph semigroup and pairing contour analysis with 55-digit 2D Newton root finding and pure Lean~4 machine verification, we have established the complete phase diagram separating complete monotonicity, CP-divisibility, P-divisibility, trace-distance backflow, and global complete positivity. Rather than triggering information backflow immediately upon pole entry at $\mupole(g) = 1 - \arccos(g)/\pi$, the negative algebraic branch-cut tail stabilizes strict CP-divisibility across a finite buffer wedge $\mu \in (\mupole(g), \mucrit(g)]$ that closes super-exponentially at $g \to 1^-$ as $\frac{\pi^2}{2\ee(1-g^2)}\exp(-\pi g/\sqrt{1-g^2})$ and joins continuously onto the exact $\mu=1$ geometric-series law $\NBLP(1,g) = (\ee^{\pi g/\sqrt{1-g^2}}-1)^{-1}\mathbf{1}_{g<1}$. Moreover, operational-time subordination of Markovian Pauli semigroups preserves P-divisibility and componentwise complete monotonicity universally while breaking CP-divisibility above the 55-digit threshold $\mustar = 0.9260578001565031$, and non-unital affine flows with analytically certified global CPTP show that Spohn relative-entropy monotonicity is strictly weaker than P-divisibility, constructively separating all six structural tiers $\mathrm{SG} \subsetneq \mathrm{CM}_{\mathrm{deph}} \subsetneq \mathrm{CP\text{-}Div} \subsetneq \mathrm{P\text{-}Div} \subsetneq \mathrm{Spohn} \subsetneq \mathrm{CPTP}$ in open quantum dynamics.
 
 \begin{acknowledgments}
-All arbitrary-precision numerical scripts, verified 55-digit datasets, vector figure scripts, and the pure Lean~4.16.0 formalization \leanid{Paper2\_Subordination.lean} are included in the Supplemental Material and code archive.
+The author thanks Sri Chaitanya Educational Institutions for institutional support and acknowledges open-source contributors to the Lean~4 theorem prover and Python scientific ecosystem (\texttt{mpmath}, \texttt{NumPy}, \texttt{SciPy}).
 \end{acknowledgments}
+
+\section*{Data Availability}
+{\def\UrlBreaks{\do\/\do-}%
+All arbitrary-precision numerical scripts (55- to 95-digit 2D Newton solvers, Pauli-subordination and six-level hierarchy verifiers, and $N=1000$ unitary Friedrichs--Lee simulations), verified strict RFC-8259 JSON/CSV datasets, vector figure scripts, and the self-contained pure Lean~4.16.0 formalization (\leanid{Paper2\_Subordination.lean}, \texttt{axioms\_check.txt}) that support the findings of this study are openly available in the Supplemental Material and at the public GitHub repository \url{https://github.com/Mehardeep-Singh-GG/subordinated-oqs-phase-boundary} (release \texttt{v1.0.0}).%
+}
 
 {\raggedright
 \begin{thebibliography}{99}
