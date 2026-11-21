@@ -1,0 +1,39 @@
+name: Verify Lean 4 Proofs & Datasets (subordinated-oqs-phase-boundary)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install scientific Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Install elan & Lean 4.16.0 toolchain
+        run: |
+          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> $GITHUB_PATH
+
+      - name: Cache Lean 4 build artifacts
+        uses: actions/cache@v4
+        with:
+          path: lean_proofs/.lake
+          key: ${{ runner.os }}-lean4-Paper2_Subordination-${{ hashFiles('lean_proofs/lean-toolchain', 'lean_proofs/lakefile.toml', 'lean_proofs/DiamondProofs/*.lean') }}
+
+      - name: Run full Lean 4 build, axiom audit, and dataset verification
+        run: python3 scripts/ci_audit.py

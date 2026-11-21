@@ -1,0 +1,39 @@
+Lean 4.16.0 Kernel Axiom Audit (pure Init, zero Mathlib)
+Paper2_Subordination.lean (2935 lines)
+
+P2_AUTHORED_PUBLIC_THEOREMS=150
+P2_AUTHORED_TOTAL_THEOREMS=196
+P2_PUBLIC_THEOREMS=211
+P2_KERNEL_TOTAL_THEOREMS=261
+P2_KERNEL_PUBLIC_ZERO_AXIOM=165
+DISALLOWED_AXIOMS=0
+# Paper 2 Headline Theorems (all 28 #print axioms checks)
+KEY: DiamondProofs.Paper2.hankel_propagator_numerator_im : []
+KEY: DiamondProofs.Paper2.hankel_derivative_numerator_im : []
+KEY: DiamondProofs.Paper2.cm_spectral_numerator_pos : []
+KEY: DiamondProofs.Paper2.single_sign_change_below : []
+KEY: DiamondProofs.Paper2.single_sign_change_above : []
+KEY: DiamondProofs.Paper2.overdamped_no_nonneg_real_root : []
+KEY: DiamondProofs.Paper2.real_root_strictly_neg : []
+KEY: DiamondProofs.Paper2.underdamped_no_real_roots : []
+KEY: DiamondProofs.Paper2.underdamped_complex_root_char : [Classical.choice, propext, Quot.sound]
+KEY: DiamondProofs.Paper2.pole_wedge_boundary_iff : [propext]
+KEY: DiamondProofs.Paper2.subdiffusive_always_pole_free : []
+KEY: DiamondProofs.Paper2.single_sign_change_integral_pos : [Quot.sound]
+KEY: DiamondProofs.Paper2.geom_partial_sum_identity : []
+KEY: DiamondProofs.Paper2.geom_tail_archimedean_bound : []
+KEY: DiamondProofs.Paper2.pauli_choi_fujiwara_algoet : []
+KEY: DiamondProofs.Paper2.pauli_subordination_cp_sufficient : []
+KEY: DiamondProofs.Paper2.pauli_subord_mu095_counterexample : [propext, Quot.sound, Classical.choice]
+KEY: DiamondProofs.Paper2.sep_semigroup_cm : [propext, Quot.sound, Classical.choice]
+KEY: DiamondProofs.Paper2.gRatCP_strictly_decreasing : [propext]
+KEY: DiamondProofs.Paper2.sep_cm_cpdiv_midpoint_nonconvex : [propext, Quot.sound, Classical.choice]
+KEY: DiamondProofs.Paper2.sep_cpdiv_pdiv_eternal : [propext, Quot.sound, Classical.choice]
+KEY: DiamondProofs.Paper2.choiNonUnital_isPSD_of_gershgorin : []
+KEY: DiamondProofs.Paper2.sep_pdiv_spohn_fixed_point : [propext, Quot.sound, Classical.choice]
+KEY: DiamondProofs.Paper2.sep_pdiv_spohn_uniform_cptp : [propext, Quot.sound, Classical.choice]
+KEY: DiamondProofs.Paper2.sep_pdiv_spohn_phi1_cptp : [propext, Quot.sound, Classical.choice]
+KEY: DiamondProofs.Paper2.sep_pdiv_spohn_phi2_cptp : [propext, Quot.sound, Classical.choice]
+KEY: DiamondProofs.Paper2.sep_pdiv_spohn_bkm_vs_blp : [propext, Quot.sound, Classical.choice]
+KEY: DiamondProofs.Paper2.sep_spohn_cptp : [propext, Quot.sound, Classical.choice]
+P2_HEADLINE_ZERO_AXIOM=14/28

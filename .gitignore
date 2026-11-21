@@ -1,0 +1,25 @@
+# Lean 4 build caches
+lean_proofs/.lake/
+lean_proofs/lake-manifest.json
+
+# Python caches & virtual environments
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+
+# LaTeX intermediates
+manuscript/*.aux
+manuscript/*.bbl
+manuscript/*.blg
+manuscript/*.fdb_latexmk
+manuscript/*.fls
+manuscript/*.log
+manuscript/*.out
+manuscript/*.synctex.gz
+manuscript/*.toc
+
+# OS artifacts
+.DS_Store
+Thumbs.db

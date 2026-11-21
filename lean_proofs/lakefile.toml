@@ -1,0 +1,10 @@
+name = "DiamondProofs"
+version = "1.0.0"
+defaultTargets = ["DiamondProofs.Paper2_Subordination"]
+
+[leanOptions]
+pp.unicode.fun = true
+autoImplicit = false
+
+[[lean_lib]]
+name = "DiamondProofs"

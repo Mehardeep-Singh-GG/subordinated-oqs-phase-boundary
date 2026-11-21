@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+title: "Exact Analytic Phase Boundary Between Complete Monotonicity, Completely Positive Divisibility, and Information Backflow in Time-Subordinated Open Quantum Dynamics"
+message: "If you use the Lean 4 formalization, arbitrary-precision solvers, or datasets from this repository, please cite this work."
+type: software
+authors:
+  - family-names: "Singh"
+    given-names: "Mehardeep"
+    affiliation: "Sri Chaitanya Educational Institutions"
+    email: "mehardeep.sim@gmail.com"
+version: "1.0.0"
+date-released: "2026-11-21"
+license: "MIT"
+repository-code: "https://github.com/Mehardeep-Singh-GG/subordinated-oqs-phase-boundary"
+url: "https://github.com/Mehardeep-Singh-GG/subordinated-oqs-phase-boundary"
+keywords:
+  - open quantum systems
+  - quantum non-Markovianity
+  - time subordination
+  - complete monotonicity
+  - CP-divisibility
+  - P-divisibility
+  - Spohn relative-entropy monotonicity
+  - Mittag-Leffler functions
+  - Friedrichs-Lee model
+  - Lean 4 formal verification

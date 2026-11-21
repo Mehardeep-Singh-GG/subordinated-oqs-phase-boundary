@@ -1,0 +1,550 @@
+\documentclass[aps,pra,onecolumn,10pt,notitlepage,amsmath,amssymb,floatfix]{revtex4-2}
+
+\usepackage[T1]{fontenc}
+\usepackage{amsthm,mathtools}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage[colorlinks=true,linkcolor=blue!55!black,citecolor=blue!55!black,urlcolor=blue!55!black]{hyperref}
+
+\renewcommand{\thesection}{S\arabic{section}}
+\renewcommand{\thesubsection}{S\arabic{section}.\arabic{subsection}}
+\renewcommand{\theequation}{S\arabic{equation}}
+\renewcommand{\thetable}{S\arabic{table}}
+\renewcommand{\thefigure}{S\arabic{figure}}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\dd}{\mathrm{d}}
+\newcommand{\ii}{\mathrm{i}}
+\newcommand{\ee}{\mathrm{e}}
+\newcommand{\Tr}{\operatorname{Tr}}
+\newcommand{\sgn}{\operatorname{sgn}}
+\newcommand{\NBLP}{\mathcal{N}_{\mathrm{BLP}}}
+\newcommand{\IRHP}{\mathcal{I}_{\mathrm{RHP}}}
+\newcommand{\IRHPreg}{\mathcal{I}_{\mathrm{RHP}}^{(\epsilon)}}
+\newcommand{\mupole}{\mu_{\mathrm{pole}}}
+\newcommand{\mucrit}{\mu_{\mathrm{crit}}}
+\newcommand{\muzero}{\mu_{\mathrm{zero}}}
+\newcommand{\mustar}{\mu_*}
+\newcommand{\leanid}[1]{{\footnotesize\ttfamily\def\_{\textunderscore\penalty0\hspace{0pt}}#1}}
+
+\begin{document}
+\setlength{\emergencystretch}{3em}
+
+\title{Supplemental Material for:\texorpdfstring{\\}{ }%
+Exact Analytic Phase Boundary Between Complete Monotonicity, Completely Positive Divisibility,\texorpdfstring{\\}{ }%
+and Information Backflow in Time-Subordinated Open Quantum Dynamics}
+
+\author{Mehardeep Singh}
+\email{mehardeep.sim@gmail.com}
+\affiliation{Sri Chaitanya Educational Institutions}
+
+\date{}
+
+\begin{abstract}
+This Supplemental Material provides complete, step-by-step analytical proofs, extended arbitrary-precision numerical datasets (up to 95 working digits), and the full pure Lean~4.16.0 verification ledger accompanying the main article. Section~\ref{sec:S1} gives full derivations of the bipartite random-telegraph-noise GKSL embedding, inverse $\mu$-stable operational-time subordination, Choi spectrum, and global Helstrom optimality of antipodal equatorial states for the Breuer--Laine--Piilo (BLP) trace-distance measure. Section~\ref{sec:S2} details the Bromwich--Hankel keyhole contour deformation, exact spectral density $K_{\mu,g}(r)$, Sokhotski--Plemelj boundary representation at $\mu = \mupole(g)$, complete monotonicity proof ($\mu \in (0,1/2]$), and Dominated Convergence completion of the Single-Sign-Change Positivity Theorem. Section~\ref{sec:S3} proves the $g \to 1^-$ super-exponential buffer closing law via two-term Watson asymptotics, proves finiteness of backflow intervals and zero crossings for all $\mu < 1$, derives the $\mu = 1$ geometric-series BLP law, and records the complete 25-point 55-digit 2D Newton phase boundary, 13-point 75-digit 2D Newton zero-crossing boundary, and 40-digit $\NBLP(1,g)$ verification tables. Section~\ref{sec:S4} derives the analytical Pollard log-convexity proof of global subadditivity of $\kappa_\mu(x)$ on $(0,\infty)$, the exact derivative $\kappa_\mu'(x)$, the 75- vs.\ 95-digit determination of $\mustar = 0.9260578001565031$, and the exhaustive asymmetric reduction across $\mu \in \{0.60, 0.70, 0.80, 0.85, 0.90, \mustar\}$. Section~\ref{sec:S5} presents full analytical proofs for all six hierarchy levels $\mathrm{SG} \subsetneq \mathrm{CM}_{\mathrm{deph}} \subsetneq \mathrm{CP\text{-}Div} \subsetneq \mathrm{P\text{-}Div} \subsetneq \mathrm{Spohn} \subsetneq \mathrm{CPTP}$, including the analytic Gershgorin global CPTP proof ($t \ge 1$) and forward-invariant reachable-ball ($0.093479 < 0.095$) Spohn proof for Level~5. Section~\ref{sec:S6} details the $N = 1000$ non-uniform Gauss--Legendre unitary Friedrichs--Lee discretization, optimal amplitude-damping BLP pairing in bound-state regimes, and continuum Volterra $E_{2-\mu}$ derivation. Section~\ref{sec:S7} lists the complete 28-headline-theorem Lean~4.16.0 verification ledger (within 150 public theorems, 14/28 axiom-free) and exact reproduction commands.
+\end{abstract}
+
+\maketitle
+\tableofcontents
+
+%==============================================================================
+\section{Bipartite RTN GKSL Embedding, Subordination, and Global Helstrom Optimality}
+\label{sec:S1}
+%==============================================================================
+
+\subsection{Explicit Solution of the Bipartite Semigroup and Subordinated Channel}
+
+On $\mathbb{C}^2_S \otimes \mathbb{C}^2_M$, let $\mathcal{L}_{SM}$ be the Lindblad generator Eq.~(3) of the main text:
+\begin{equation}
+\label{eq:S1_L_SM}
+\mathcal{L}_{SM}(\rho_{SM}) = -\ii\left[\frac{1}{2}\sigma_z \otimes \tau_z,\;\rho_{SM}\right]
++ g\Big((I_S \otimes \tau_x)\,\rho_{SM}\,(I_S \otimes \tau_x) - \rho_{SM}\Big), \qquad g > 0.
+\end{equation}
+Because $(I_S \otimes \tau_x)^\dagger = I_S \otimes \tau_x$ and $(I_S \otimes \tau_x)^2 = I_S \otimes I_M$, $\mathcal{L}_{SM}$ is in exact Gorini--Kossakowski--Sudarshan--Lindblad (GKSL) form with a single Hermitian jump operator $\sqrt{2g}(I_S \otimes \tau_x)$, guaranteeing that $\Lambda_{SM}(\tau) := \ee^{\tau\mathcal{L}_{SM}}$ is a trace-preserving, unital, completely positive (CPTP) contraction semigroup for all $\tau \ge 0$.
+
+Decompose $\rho_{SM}(\tau) = \sum_{a,b\in\{0,1\}} |a\rangle\langle b|_S \otimes R_{ab}(\tau)$ in the $\sigma_z$-eigenbasis ($\sigma_z|0\rangle = +|0\rangle$, $\sigma_z|1\rangle = -|1\rangle$). Since $\frac{1}{2}\sigma_z|a\rangle = \frac{(-1)^a}{2}|a\rangle$, Eq.~\eqref{eq:S1_L_SM} decouples into four $2\times 2$ blocks on $\mathcal{H}_M$:
+\begin{align}
+\dot{R}_{00} &= -\frac{\ii}{2}[\tau_z, R_{00}] + g(\tau_x R_{00}\tau_x - R_{00}), \qquad
+\dot{R}_{11} = +\frac{\ii}{2}[\tau_z, R_{11}] + g(\tau_x R_{11}\tau_x - R_{11}), \label{eq:S1_pop}\\
+\dot{R}_{01} &= -\frac{\ii}{2}\{\tau_z, R_{01}\} + g(\tau_x R_{01}\tau_x - R_{01}), \qquad
+R_{10}(\tau) = R_{01}(\tau)^\dagger. \label{eq:S1_coh}
+\end{align}
+Taking the trace over $M$ in Eq.~\eqref{eq:S1_pop} gives $\frac{\dd}{\dd\tau}\Tr_M(R_{aa}(\tau)) = 0$, confirming exact population preservation $\langle a|\Phi_{1,g}(\tau)\rho_S|a\rangle = \langle a|\rho_S|a\rangle$. Initializing $\rho_{SM}(0) = \rho_S \otimes \frac{1}{2}I_M$ sets $R_{01}(0) = \frac{1}{2}\rho_{01} I_M$, which is diagonal in the $\tau_z$-eigenbasis $\{|m_+\rangle, |m_-\rangle\}$ ($\tau_z|m_\pm\rangle = \pm|m_\pm\rangle$, $\tau_x|m_\pm\rangle = |m_\mp\rangle$). Because both the anti-commutator $-\frac{\ii}{2}\{\tau_z, \cdot\}$ and the bit-flip $\tau_x \cdot \tau_x$ preserve the subspace of $\tau_z$-diagonal matrices, $R_{01}(\tau) = v_+(\tau)|m_+\rangle\langle m_+| + v_-(\tau)|m_-\rangle\langle m_-|$ remains strictly diagonal for all $\tau \ge 0$, with components obeying
+\begin{equation}
+\label{eq:S1_v_ode}
+\frac{\dd}{\dd\tau}\begin{pmatrix} v_+ \\ v_- \end{pmatrix}
+= \begin{pmatrix} -g - \ii & g \\ g & -g + \ii \end{pmatrix}\begin{pmatrix} v_+ \\ v_- \end{pmatrix}, \qquad
+\begin{pmatrix} v_+(0) \\ v_-(0) \end{pmatrix} = \frac{\rho_{01}}{2}\begin{pmatrix} 1 \\ 1 \end{pmatrix}.
+\end{equation}
+Taking the Laplace transform $\tilde{v}_\pm(u) = \int_0^\infty \ee^{-u\tau} v_\pm(\tau)\,\dd\tau$ ($\operatorname{Re} u > 0$) gives
+\[
+\begin{pmatrix} u + g + \ii & -g \\ -g & u + g - \ii \end{pmatrix}\begin{pmatrix} \tilde{v}_+(u) \\ \tilde{v}_-(u) \end{pmatrix}
+= \frac{\rho_{01}}{2}\begin{pmatrix} 1 \\ 1 \end{pmatrix}.
+\]
+The matrix determinant equals $(u+g)^2 + 1 - g^2 = u^2 + 2gu + 1$. Inverting the $2\times 2$ matrix yields
+\begin{equation}
+\label{eq:S1_v_lap}
+\tilde{v}_\pm(u) = \frac{\rho_{01}}{2}\,\frac{u + 2g \mp \ii}{u^2 + 2gu + 1}
+\quad\Longrightarrow\quad
+\Tr_M\big[\tilde{R}_{01}(u)\big] = \tilde{v}_+(u) + \tilde{v}_-(u) = \frac{u + 2g}{u^2 + 2gu + 1}\,\rho_{01} = \tilde{G}_{1,g}(u)\,\rho_{01}.
+\end{equation}
+Subordinating the operational clock $\tau$ by the inverse $\mu$-stable hitting-time density $p_\mu(\tau,t) \ge 0$ ($\int_0^\infty p_\mu(\tau,t)\,\dd\tau = 1$, $\int_0^\infty \ee^{-st} p_\mu(\tau,t)\,\dd t = s^{\mu-1}\ee^{-\tau s^\mu}$ for $\operatorname{Re} s > 0$, $\mu \in (0,1]$) produces the reduced channel Eq.~(5) of the main text with
+\begin{equation}
+\label{eq:S1_G_sub}
+G_{\mu,g}(t) = \int_0^\infty p_\mu(\tau,t)\,G_{1,g}(\tau)\,\dd\tau, \qquad
+\tilde{G}_{\mu,g}(s) = \int_0^\infty s^{\mu-1}\ee^{-\tau s^\mu} G_{1,g}(\tau)\,\dd\tau
+= s^{\mu-1}\tilde{G}_{1,g}(s^\mu) = \frac{s^{\mu-1}(s^\mu + 2g)}{s^{2\mu} + 2g s^\mu + 1}.
+\end{equation}
+
+\subsection{Choi Matrix Spectrum and Global BLP Optimality (Proposition 1)}
+
+For the unital pure-dephasing map $\Phi_{\mu,g}(t)(\rho) = \frac{1+G_{\mu,g}(t)}{2}\rho + \frac{1-G_{\mu,g}(t)}{2}\sigma_z\rho\sigma_z$, the normalized $4\times 4$ Choi--Jamio\l kowski state $J(\Phi_{\mu,g}(t)) := (\Phi_{\mu,g}(t)\otimes \mathrm{id}_2)(|\Phi^+\rangle\langle\Phi^+|)$ with $|\Phi^+\rangle = \frac{1}{\sqrt{2}}(|00\rangle + |11\rangle)$ reads explicitly in the computational basis $\{|00\rangle, |01\rangle, |10\rangle, |11\rangle\}$:
+\begin{equation}
+\label{eq:S1_choi}
+J(\Phi_{\mu,g}(t)) = \frac{1}{2}\begin{pmatrix} 1 & 0 & 0 & G_{\mu,g}(t) \\ 0 & 0 & 0 & 0 \\ 0 & 0 & 0 & 0 \\ G_{\mu,g}(t) & 0 & 0 & 1 \end{pmatrix},
+\end{equation}
+whose eigenvalues are $\big\{\frac{1+G_{\mu,g}(t)}{2}, \frac{1-G_{\mu,g}(t)}{2}, 0, 0\big\}$. Since $\Phi_{\mu,g}(t)$ is a probability-weighted mixture of CPTP maps $\Tr_M \circ \ee^{\tau\mathcal{L}_{SM}}(\cdot\otimes\rho_M^{\mathrm{eq}})$, $J(\Phi_{\mu,g}(t)) \ge 0$ holds identically, proving $|G_{\mu,g}(t)| \le 1$ for all $(\mu,g) \in (0,1]\times (0,\infty)$ and all $t \ge 0$.
+
+For any pair of qubit states $\rho_j = \frac{1}{2}(I + \mathbf{r}_j\cdot\boldsymbol{\sigma})$ ($j=1,2$, $\|\mathbf{r}_j\|_2 \le 1$) with Bloch difference $\Delta\mathbf{r} = (\Delta x, \Delta y, \Delta z)$ and $r_\perp^2 := \Delta x^2 + \Delta y^2 \le \|\Delta\mathbf{r}\|_2^2 \le 4$, the evolved difference has Bloch vector $(G_{\mu,g}(t)\Delta x, G_{\mu,g}(t)\Delta y, \Delta z)$, so $D_{\mathrm{tr}}(\Phi_t\rho_1, \Phi_t\rho_2) = \frac{1}{2}\sqrt{G(t)^2 r_\perp^2 + \Delta z^2}$. Differentiating wherever $G(t)^2 r_\perp^2 + \Delta z^2 > 0$ gives Eq.~(7) of the main text:
+\begin{equation}
+\label{eq:S1_sigma_blp}
+\sigma_{\mathrm{BLP}}(t; \rho_1, \rho_2) = \frac{G(t)\dot{G}(t)\,r_\perp^2}{2\sqrt{G(t)^2 r_\perp^2 + \Delta z^2}}.
+\end{equation}
+If $G(t)\dot{G}(t) \le 0$, every pair has $\sigma_{\mathrm{BLP}}(t) \le 0$. If $G(t)\dot{G}(t) > 0$, then $G(t) \neq 0$, and dropping $\Delta z^2 \ge 0$ plus using $r_\perp \le 2$ gives
+\[
+\sigma_{\mathrm{BLP}}(t; \rho_1, \rho_2)
+\le \frac{G(t)\dot{G}(t)\,r_\perp^2}{2|G(t)| r_\perp}
+= \frac{r_\perp}{2}\,\sgn(G(t))\,\dot{G}(t)
+\le \sgn(G(t))\,\dot{G}(t) = \frac{\dd}{\dd t}|G(t)|,
+\]
+attained simultaneously at every $t \ge 0$ by the antipodal equatorial pair $|\pm\rangle = \frac{1}{\sqrt{2}}(|0\rangle\pm |1\rangle)$ ($\Delta x = 2, \Delta y = \Delta z = 0$). Integrating the positive part over $[0,\infty)$ proves $\NBLP(\mu,g) = \int_{\frac{\dd}{\dd t}|G_{\mu,g}(t)| > 0} \frac{\dd}{\dd t}|G_{\mu,g}(t)|\,\dd t$.
+
+%==============================================================================
+\section{Hankel Contour Deformation, Complete Monotonicity, and Single-Sign-Change Positivity}
+\label{sec:S2}
+%==============================================================================
+
+\subsection{Closed-Form Mittag-Leffler Decomposition Across \texorpdfstring{$g < 1$, $g = 1$, and $g > 1$}{g < 1, g = 1, and g > 1}}
+
+Setting $u = s^\mu$, partial-fraction decomposition of $\frac{u+2g}{u^2+2gu+1}$ separates into three regimes:
+\begin{enumerate}[label=(\roman*),leftmargin=1.8em,itemsep=2pt]
+\item \textbf{Underdamped ($0 < g < 1$, $\omega = \sqrt{1-g^2}$, $u_\pm = -g \pm \ii\omega$):}
+\[
+\frac{u+2g}{(u-u_+)(u-u_-)} = \frac{c_+}{u-u_+} + \frac{c_-}{u-u_-}, \qquad
+c_+ = \frac{u_+ + 2g}{u_+ - u_-} = \frac{g + \ii\omega}{2\ii\omega} = \frac{1}{2}\left(1 - \ii\frac{g}{\omega}\right), \qquad c_- = \overline{c_+}.
+\]
+Applying $\mathcal{L}^{-1}\!\left[\frac{s^{\mu-1}}{s^\mu - a}\right](t) = E_\mu(a t^\mu)$ and $\frac{\dd}{\dd t} E_\mu(a t^\mu) = a t^{\mu-1} E_{\mu,\mu}(a t^\mu)$, together with $c_+ u_+ = \frac{1}{2}(1-\ii g/\omega)(-g+\ii\omega) = \frac{\ii}{2\omega}$, yields
+\begin{equation}
+\label{eq:S2_ml_under}
+G_{\mu,g}(t) = \operatorname{Re}\!\left[\left(1 - \ii\frac{g}{\omega}\right)E_\mu(u_+ t^\mu)\right], \qquad
+\dot{G}_{\mu,g}(t) = 2\operatorname{Re}\!\left[\frac{\ii}{2\omega} t^{\mu-1} E_{\mu,\mu}(u_+ t^\mu)\right] = -\frac{t^{\mu-1}}{\omega}\operatorname{Im}\!\left[E_{\mu,\mu}(u_+ t^\mu)\right].
+\end{equation}
+\item \textbf{Exceptional point ($g = 1$):} $\frac{u+2}{(u+1)^2} = \frac{1}{u+1} + \frac{1}{(u+1)^2}$. Using $\mathcal{L}^{-1}\!\left[\frac{s^{\mu-1}}{(s^\mu+1)^2}\right](t) = \sum_{k=0}^\infty \frac{(k+1)(-1)^k t^{\mu(k+1)}}{\Gamma(\mu k + \mu + 1)} = \frac{t^\mu}{\mu} E_{\mu,\mu}(-t^\mu)$ (since $\frac{k+1}{\Gamma(\mu(k+1)+1)} = \frac{1}{\mu\Gamma(\mu(k+1))}$) gives
+\begin{equation}
+\label{eq:S2_ml_crit}
+G_{\mu,1}(t) = E_\mu(-t^\mu) + \frac{t^\mu}{\mu} E_{\mu,\mu}(-t^\mu), \qquad
+\dot{G}_{\mu,1}(t) = -t^{2\mu-1}\sum_{k=0}^\infty \frac{(k+1)(-t^\mu)^k}{\Gamma(\mu(k+2))}.
+\end{equation}
+\item \textbf{Overdamped ($g > 1$, $\Omega = \sqrt{g^2-1}$, $\omega_\pm = g \pm \Omega > 0$, $\omega_+\omega_- = 1$):} $\frac{u+2g}{(u+\omega_-)(u+\omega_+)} = \frac{1}{2\Omega}\!\left(\frac{\omega_+}{u+\omega_-} - \frac{\omega_-}{u+\omega_+}\right)$, giving
+\begin{equation}
+\label{eq:S2_ml_over}
+G_{\mu,g}(t) = \frac{\omega_+ E_\mu(-\omega_- t^\mu) - \omega_- E_\mu(-\omega_+ t^\mu)}{2\Omega}, \qquad
+\dot{G}_{\mu,g}(t) = -\frac{t^{\mu-1}}{2\Omega}\big[E_{\mu,\mu}(-\omega_- t^\mu) - E_{\mu,\mu}(-\omega_+ t^\mu)\big],
+\end{equation}
+since $\omega_+(-\omega_-) = -1$ and $-\omega_-(-\omega_+) = +1$.
+\end{enumerate}
+
+\subsection{Bromwich--Hankel Contour Deformation and Exact Spectral Density \texorpdfstring{$K_{\mu,g}(r)$}{K\_\{mu,g\}(r)}}
+
+For $\mu \in (0,1)$, choose the principal branch of $s^\mu = |s|^\mu \ee^{\ii\mu\arg s}$ with $\arg s \in (-\pi, \pi)$ and branch cut along $(-\infty, 0]$. On the large circle $|s| = R \to \infty$ in the left half-plane, $|\tilde{G}_{\mu,g}(s)| = O(R^{-1})$ uniformly, so Jordan's lemma annihilates the outer circular arcs for every $t > 0$. On the small circle $|s| = \varepsilon \to 0^+$, $|\tilde{G}_{\mu,g}(s)| = O(\varepsilon^{\mu-1})$, so $\big|\int_{|s|=\varepsilon} \ee^{st}\tilde{G}_{\mu,g}(s)\,\dd s\big| = O(\varepsilon^\mu) \to 0$. Deforming the Bromwich line $\operatorname{Re} s = c > 0$ onto the Hankel keyhole contour hugging the upper bank $s = r\ee^{+\ii\pi}$ ($r:\infty\to 0$) and lower bank $s = r\ee^{-\ii\pi}$ ($r:0\to\infty$) yields by Cauchy's residue theorem:
+\begin{equation}
+\label{eq:S2_keyhole}
+G_{\mu,g}(t) = \sum_{\substack{s_* \text{ pole}\\|\arg s_*| < \pi}} \operatorname{Res}_{s=s_*}\!\left[\tilde{G}_{\mu,g}(s)\ee^{st}\right]
++ \frac{1}{2\pi\ii}\int_0^\infty \ee^{-rt}\Big(\tilde{G}_{\mu,g}(r\ee^{-\ii\pi}) - \tilde{G}_{\mu,g}(r\ee^{+\ii\pi})\Big)\dd r.
+\end{equation}
+Because $\tilde{G}_{\mu,g}(\bar{s}) = \overline{\tilde{G}_{\mu,g}(s)}$ by Schwarz reflection, $\tilde{G}_{\mu,g}(r\ee^{-\ii\pi}) - \tilde{G}_{\mu,g}(r\ee^{+\ii\pi}) = 2\ii\operatorname{Im}\tilde{G}_{\mu,g}(r\ee^{-\ii\pi})$, giving $G_{\mathrm{cut}}(t) = \int_0^\infty K_{\mu,g}(r)\ee^{-rt}\,\dd r$ with $K_{\mu,g}(r) = \frac{1}{\pi}\operatorname{Im}\tilde{G}_{\mu,g}(r\ee^{-\ii\pi})$. Writing $z = u\ee^{-\ii\pi\mu}$ ($u = r^\mu > 0$), expanding $-z(z+2g)(\bar{z}^2+2g\bar{z}+1)$ over $\mathbb{C}$, and noting that $|z|^4 + 4g^2|z|^2 + 2g|z|^2(z+\bar{z}) \in \mathbb{R}$ leaves $-\operatorname{Im}(z^2+2gz) = u^2\sin(2\pi\mu) + 2gu\sin(\pi\mu) = 2u\sin(\pi\mu)(u\cos(\pi\mu)+g)$ exactly (verified symbolically in Lean~4, \leanid{hankel\_propagator\_numerator\_im}), giving Eqs.~(13)--(15) of the main text.
+
+\textbf{Factorization of $D_{\mu,g}(r)$ and Boundary Cancellation at $\mu = \mupole(g)$:}
+For $g \in (0,1)$ with $\theta = \arccos g \in (0, \pi/2)$ and $\mupole(g) = 1 - \theta/\pi \in (1/2, 1)$, we have $u_\pm = \ee^{\pm\ii(\pi-\theta)}$, so
+\[
+|z - u_+|^2 = |u\ee^{-\ii\pi\mu} - \ee^{\ii(\pi-\theta)}|^2 = u^2 + 1 - 2u\cos(\pi\mu + \pi - \theta) = (u-1)^2 + 4u\cos^2\!\left(\frac{\pi\mu - \theta}{2}\right),
+\]
+\[
+|z - u_-|^2 = |u\ee^{-\ii\pi\mu} - \ee^{-\ii(\pi-\theta)}|^2 = u^2 + 1 - 2u\cos(\pi\mu - \pi + \theta) = (u-1)^2 + 4u\sin^2\!\left(\frac{\pi(\mu - \mupole(g))}{2}\right).
+\]
+Multiplying establishes Eq.~(16) of the main text. Hence $D_{\mu,g}(r) \ge 0$ everywhere, vanishing on $(0,\infty)$ if and only if $u = 1$ ($r=1$) and $\mu = \mupole(g)$. Right on $\mu = \mupole(g)$, $\cos(\pi\mupole) = -g$, so $u\cos(\pi\mupole) + g = -g(u-1)$ cancels one power of $(u-1)$ against $(u-1)^2$, leaving a simple pole at $r = 1$:
+\begin{equation}
+\label{eq:S2_K_pole_boundary}
+K_{\mupole(g),g}(r) = -\frac{2g\omega}{\pi}\,\frac{r^{\mupole-1}}{(r^{\mupole}-1)\big(r^{2\mupole} + (2-4g^2)r^{\mupole} + 1\big)},
+\end{equation}
+with residue $\operatorname{Res}_{r=1} K_{\mupole,g}(r) = -\frac{2g\omega}{\pi\cdot\mupole\cdot 4(1-g^2)} = -\frac{g}{2\pi\mupole\omega}$. Indenting the keyhole contour symmetrically around $s = -1$ (Sokhotski--Plemelj half-residue $\frac{1}{2}\lim_{\mu\downarrow\mupole}G_{\mathrm{pole}}(t) = \frac{1}{2\mupole}\ee^{-t}$) gives $G_{\mupole,g}(t) = \mathrm{PV}_r\!\int_0^\infty K_{\mupole,g}(r)\ee^{-rt}\,\dd r + \frac{1}{2\mupole}\ee^{-t}$.
+
+\subsection{Complete Dominated Convergence Step on \texorpdfstring{$\mu = \mupole(g)$}{mu = mu\_pole(g)} (Theorem 4)}
+
+In the open interior of $\mathcal{W}_{\mathrm{PF}}$ with $\mu \in (1/2, 1)$, $\phi_{\mu,g}(r) := r K_{\mu,g}(r)$ satisfies $|\phi_{\mu,g}(r)| = O(r^\mu)$ as $r \to 0^+$ and $O(r^{-2\mu})$ as $r \to \infty$, so $\phi_{\mu,g} \in C((0,\infty)) \cap L^1((0,\infty))$. Differentiating $G_{\mu,g}(t) = \int_0^\infty K_{\mu,g}(r)\ee^{-rt}\,\dd r$ under the integral sign yields $-\dot{G}_{\mu,g}(t) = \int_0^\infty \phi_{\mu,g}(r)\ee^{-rt}\,\dd r$, and taking $t \to 0^+$ gives $\int_0^\infty \phi_{\mu,g}(r)\,\dd r = -\dot{G}_{\mu,g}(0^+) = 0$ (because $1 - G_{\mu,g}(t) \sim t^{2\mu}/\Gamma(2\mu+1)$ and $2\mu > 1$). Since $\phi_{\mu,g}(r)$ changes sign strictly once at $r_0(\mu) = (g/|\cos(\pi\mu)|)^{1/\mu}$ from positive to negative and is not zero almost everywhere, Lemma~3 of the main text establishes $-\dot{G}_{\mu,g}(t) = \int_0^\infty \phi_{\mu,g}(r)(\ee^{-rt}-\ee^{-r_0(\mu)t})\,\dd r > 0$.
+
+Right on $\mu = \mupole(g)$, the singular factor $(r^{\mupole}-1)$ in Eq.~\eqref{eq:S2_K_pole_boundary} is cancelled identically by $(\ee^{-rt} - \ee^{-t}) = -t\ee^{-t}(r-1) + O((r-1)^2)$:
+\begin{equation}
+\label{eq:S2_removable_limit}
+\lim_{r\to 1} \phi_{\mupole(g),g}(r)(\ee^{-rt} - \ee^{-t})
+= \left(-\frac{2g\omega}{\pi\cdot 4\omega^2}\right)\left(\frac{-t\ee^{-t}}{\mupole(g)}\right)
+= \frac{g\,t\,\ee^{-t}}{2\pi\mupole(g)\omega} > 0.
+\end{equation}
+Together with the uniform $L^1$ envelope $M_t \mathbf{1}_{[1/2,3/2]} + C_3(r^{\mu_1}\mathbf{1}_{(0,1/2)} + r^{-2\mu_1}\mathbf{1}_{(3/2,\infty)})$ derived in Theorem~4 of the main text, Lebesgue's Dominated Convergence Theorem yields $-\dot{G}_{\mupole(g),g}(t) = \int_0^\infty \phi_{\mupole(g),g}(r)(\ee^{-rt}-\ee^{-t})\,\dd r > 0$ strictly for every $t > 0$.
+
+%==============================================================================
+\section{Super-Exponential \texorpdfstring{$g \to 1^-$}{g -> 1-} Buffer Law, Finiteness of Backflow Lobes, and 55-Digit Phase Tables}
+\label{sec:S3}
+%==============================================================================
+
+\subsection{Two-Term Watson Expansion of the Super-Exponential Buffer Closing Law}
+
+Set $\mu = 1 - \epsilon$ with $\epsilon \to 0^+$ at fixed $g \in (0,1)$. Then $\sin(\pi\mu) = \sin(\pi\epsilon) = \pi\epsilon + O(\epsilon^3)$, $\cos(\pi\mu) = -\cos(\pi\epsilon) = -1 + O(\epsilon^2)$, and $r^\mu = r(1 - \epsilon\ln r + O(\epsilon^2))$, so Eqs.~(13)--(14) of the main text expand uniformly on compact subsets of $(0,1)$ to
+\begin{equation}
+\label{eq:S3_K_eps}
+K_{1-\epsilon,g}(r) = 2\epsilon\,\frac{g - r}{(r^2 - 2gr + 1)^2} + O(\epsilon^2), \qquad
+\phi_{1-\epsilon,g}(r) = 2\epsilon\,\frac{r(g - r)}{(r^2 - 2gr + 1)^2} + O(\epsilon^2).
+\end{equation}
+Expanding the rational factor about $r = 0$:
+\[
+\frac{r(g-r)}{(1 - 2gr + r^2)^2}
+= r(g-r)\big(1 + 4gr + O(r^2)\big)
+= g r + (4g^2 - 1)r^2 + O(r^3).
+\]
+By Watson's lemma for large $t_1$, integrating $-\dot{G}_{\mathrm{cut}}(t_1) = \int_0^\infty \phi_{1-\epsilon,g}(r)\ee^{-r t_1}\,\dd r$ term-by-term via $\int_0^\infty r^n \ee^{-r t_1}\,\dd r = n!/t_1^{n+1}$ gives
+\begin{equation}
+\label{eq:S3_watson2}
+-\dot{G}_{\mathrm{cut}}(t_1) = 2\epsilon\left[\frac{g}{t_1^2} + \frac{2(4g^2 - 1)}{t_1^3} + O(t_1^{-4})\right] + O(\epsilon^2).
+\end{equation}
+Meanwhile, at $\mu = 1$ the pole contribution equals $\dot{G}_{1,g}(t) = -\frac{1}{\omega}\ee^{-gt}\sin(\omega t)$, whose first positive maximum occurs where $\ddot{G}_{1,g}(t) = 0 \iff \tan(\omega t) = \omega/g = \tan\theta \implies \omega t_1 = \pi + \theta$, i.e. $t_1(g) = (\pi + \arccos g)/\sqrt{1-g^2}$. Evaluating $\dot{G}_{1,g}(t_1)$ gives
+\[
+\dot{G}_{1,g}(t_1) = -\frac{1}{\omega}\ee^{-g t_1}\sin(\pi+\theta) = +\frac{\sin\theta}{\omega}\ee^{-g t_1} = \ee^{-g t_1}.
+\]
+Setting $\dot{G}_{\mathrm{pole}}(t_1) + \dot{G}_{\mathrm{cut}}(t_1) = 0$ yields Eq.~(21) of the main text:
+\begin{equation}
+\label{eq:S3_asymp_full}
+1 - \mucrit(g) \sim \frac{t_1(g)^2}{2g + 4(4g^2-1)/t_1(g)}\,\ee^{-g t_1(g)}.
+\end{equation}
+Writing $g = 1 - \delta$ ($\delta \to 0^+$), we have $\omega = \sqrt{2\delta}(1 + O(\delta))$ and $\arccos(1-\delta) = \sqrt{2\delta}(1 + O(\delta))$, so $\frac{g\arccos g}{\sqrt{1-g^2}} = 1 + O(\delta)$ and $t_1(g) = \frac{\pi}{\sqrt{1-g^2}}(1 + O(\sqrt{\delta}))$, giving the leading closed form $\frac{\pi^2}{2\ee(1-g^2)}\exp(-\pi g/\sqrt{1-g^2})$.
+
+\subsection{Finiteness of Backflow Lobes and Non-Invertibility Zero Crossings for \texorpdfstring{$\mu < 1$}{mu < 1}}
+
+\begin{theorem}[Global Finiteness for Every $\mu \in (0,1)$]
+\label{thm:S3_finite}
+For every $g \in (0,1)$ and every $\mu \in (0,1)$, both the backflow set $\{t > 0 : \sigma_{\mathrm{BLP}}(t) > 0\}$ and the non-invertibility zero set $\{t > 0 : G_{\mu,g}(t) = 0\}$ are bounded subsets of $(0,\infty)$, consisting of at most finitely many intervals and finitely many isolated zeros, respectively.
+\end{theorem}
+\begin{proof}
+If $\mu \le \mupole(g)$, both sets are empty by Theorem~4 of the main text. If $\mu \in (\mupole(g), 1)$, then $\psi = (\pi-\theta)/\mu \in (\pi/2, \pi)$ implies $\alpha = -\cos\psi > 0$, so by Eq.~(19) of the main text $|G_{\mathrm{pole}}(t)| \le \frac{1}{\mu\sin\theta}\ee^{-\alpha t}$ and $|\dot{G}_{\mathrm{pole}}(t)| \le \frac{1}{\mu\sin\theta}\ee^{-\alpha t}$ (note also that $\dot{G}_{\mathrm{pole}}(0) = \frac{\sin(\psi+\theta)}{\mu\sin\theta} = \frac{\cos\psi + (g/\omega)\sin\psi}{\mu} < 0$ on $(\mupole(g), 1)$ and vanishes at $\mu = 1$). Conversely, from $K_{\mu,g}(r) = \frac{2g\sin(\pi\mu)}{\pi} r^{\mu-1}(1 + O(r^\mu))$ as $r \to 0^+$, Watson's lemma yields $G_{\mathrm{cut}}(t) \sim \frac{2g}{\Gamma(1-\mu)} t^{-\mu} > 0$ and $\dot{G}_{\mathrm{cut}}(t) \sim -\frac{2g\mu}{\Gamma(1-\mu)} t^{-(\mu+1)} < 0$ as $t \to \infty$. Because $\ee^{-\alpha t} = o(t^{-(\mu+1)})$ for any $\alpha > 0$, there exists $T_*(\mu,g) < \infty$ such that for all $t \ge T_*$, both $G_{\mu,g}(t) > 0$ and $\dot{G}_{\mu,g}(t) < 0$ strictly (so $\sigma_{\mathrm{BLP}}(t) < 0$). Because $G_{\mu,g}$ and $\dot{G}_{\mu,g}$ are real-analytic on $(0,\infty)$ (as sums of entire functions of $t^\mu$ via Eq.~\eqref{eq:S2_ml_under}), they can have at most finitely many zeros on the compact interval $[t_0, T_*]$ (with $t_0 > 0$ chosen inside the initial monotonic window $G_{\mu,g} \sim 1 - t^{2\mu}/\Gamma(2\mu+1)$), proving finiteness of both sets.
+\end{proof}
+
+\subsection{Complete 55-Digit Phase Boundary, 75-Digit Zero-Crossing, Finite-Lobe, and \texorpdfstring{$\mu = 1$}{mu = 1} Verification Tables}
+
+Tables~\ref{tab:S3_full_boundary} and~\ref{tab:S3_finiteness_mu1} present the complete high-precision phase datasets from \texttt{phase\_boundary\_exact.csv} (55-digit 2D Newton on $(\dot{G},\ddot{G})=(0,0)$, residuals $\le 10^{-82}$), \texttt{mu\_zero\_boundary.json} (75-digit 2D Newton on $(G,\dot{G})=(0,0)$, residuals $\le 10^{-64}$), and \texttt{finiteness\_and\_asymptotics.json}.
+
+\begin{table}[h]
+\centering
+\caption{Complete 55-digit 2D Newton phase boundary table ($\mupole(g)$, $\mucrit(g)$, buffer width $\Delta\mu = \mucrit-\mupole$, 75-digit 2D Newton zero-crossing threshold $\muzero(g)$, critical peak $t_{\mathrm{peak}}$, and $g\to 1^-$ two-term Watson ratio against Eq.~\eqref{eq:S3_asymp_full}).}
+\label{tab:S3_full_boundary}
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{@{}ccccccc@{}}
+\toprule
+$g$ & $\mupole(g)$ & $\mucrit(g)$ & $\Delta\mu = \mucrit-\mupole$ & $\muzero(g)$ & $t_{\mathrm{peak}}$ & Ratio vs.\ Eq.~\eqref{eq:S3_asymp_full} \\
+\midrule
+$0.01$ & $0.5031831519$ & $0.5087191558$ & $0.0055360039$ & ---            & $10.705083$ & --- \\
+$0.02$ & $0.5063666222$ & $0.5164909674$ & $0.0101243452$ & ---            & $9.643598$  & --- \\
+$0.05$ & $0.5159221332$ & $0.5379667351$ & $0.0220446019$ & $0.5567381136$ & $8.263325$  & --- \\
+$0.10$ & $0.5318842804$ & $0.5710141995$ & $0.0391299190$ & $0.6013004079$ & $7.320319$  & --- \\
+$0.15$ & $0.5479273698$ & $0.6023719640$ & $0.0544445943$ & ---            & $6.854708$  & --- \\
+$0.20$ & $0.5640942168$ & $0.6327439471$ & $0.0686497302$ & $0.6777729389$ & $6.582765$  & --- \\
+$0.25$ & $0.5804306233$ & $0.6624456302$ & $0.0820150070$ & ---            & $6.415610$  & --- \\
+$0.30$ & $0.5969866840$ & $0.6916462751$ & $0.0946595911$ & $0.7443002711$ & $6.314598$  & --- \\
+$0.35$ & $0.6138184173$ & $0.7204414690$ & $0.1066230516$ & ---            & $6.260080$  & --- \\
+$0.40$ & $0.6309898804$ & $0.7488811925$ & $0.1178913121$ & $0.8037122313$ & $6.241319$  & --- \\
+$0.45$ & $0.6485760219$ & $0.7769812406$ & $0.1284052187$ & ---            & $6.252496$  & --- \\
+$0.50$ & $0.6666666667$ & $0.8047264033$ & $0.1380597367$ & $0.8569904565$ & $6.290996$  & --- \\
+$0.55$ & $0.6853722943$ & $0.8320680022$ & $0.1466957079$ & ---            & $6.356762$  & --- \\
+$0.60$ & $0.7048327647$ & $0.8589158346$ & $0.1540830699$ & $0.9042447124$ & $6.452335$  & --- \\
+$0.65$ & $0.7252311215$ & $0.8851226357$ & $0.1598915142$ & ---            & $6.583607$  & --- \\
+$0.70$ & $0.7468166889$ & $0.9104565351$ & $0.1636398462$ & $0.9448068101$ & $6.761717$  & $0.2929$ \\
+$0.75$ & $0.7699465438$ & $0.9345521551$ & $0.1646056112$ & $0.9620773849$ & $7.007396$  & $0.3613$ \\
+$0.80$ & $0.7951672353$ & $0.9568210984$ & $0.1616538630$ & $0.9768581411$ & $7.361590$  & $0.4369$ \\
+$0.85$ & $0.8233981632$ & $0.9762827868$ & $0.1528846236$ & $0.9885714759$ & $7.915743$  & $0.5208$ \\
+$0.90$ & $0.8564337069$ & $0.9912559913$ & $0.1348222844$ & $0.9964265138$ & $8.923026$  & $0.6189$ \\
+$0.93$ & $0.8801934166$ & $0.9970067091$ & $0.1168132925$ & ---            & $10.081037$ & $0.6927$ \\
+$0.95$ & $0.8989173759$ & $0.9991239722$ & $0.1002065963$ & $0.9997412312$ & $11.457576$ & $0.7549$ \\
+$0.97$ & $0.9218340681$ & $0.9999199326$ & $0.0780858645$ & ---            & $14.176895$ & $0.8347$ \\
+$0.98$ & $0.9362314391$ & $0.9999932750$ & $0.0637618359$ & ---            & $16.971980$ & $0.8832$ \\
+$0.99$ & $0.9549465864$ & $0.9999999798$ & $0.0450533935$ & ---            & $23.385138$ & $0.9379$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[h]
+\centering
+\caption{Left: Finite backflow lobes and zero crossings at $g = 0.50$ across $\mu \in \{0.80, 0.85, 0.90, 0.95, 0.98\}$ (confirming Theorem~\ref{thm:S3_finite}). Right: 40-digit verification of the $\mu = 1$ closed form $\NBLP(1,g) = (\ee^{\pi g/\sqrt{1-g^2}} - 1)^{-1}\mathbf{1}_{g<1}$.}
+\label{tab:S3_finiteness_mu1}
+\setlength{\tabcolsep}{4.5pt}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}cccccc|ccc@{}}
+\toprule
+\multicolumn{6}{c|}{Finite Backflow Lobes at $g = 0.50$ ($t_{\max} = 60$)} & \multicolumn{3}{c}{$\mu = 1$ Exact BLP Cross-Check (40d)} \\
+$\mu$ & Zeros of $G$ & $\sigma_{\mathrm{BLP}}>0$ Lobes & Last $t_{\mathrm{rev}}$ & $t_{\mathrm{asymp}}$ & $\NBLP$ / $\IRHPreg$ & $g$ & $\NBLP(1,g)$ (16 digits) & Rel.\ Err \\
+\midrule
+$0.80$ & $0$ & $0$ & $0$       & $6.250$  & $0$ / $0$                 & $0.05$ & $5.871335959194393$ & $6.95\times 10^{-56}$ \\
+$0.85$ & $0$ & $1$ & $8.0389$  & $7.837$  & $0.018309$ / $1.4296$     & $0.20$ & $1.112470459393216$ & $0.0$ \\
+$0.90$ & $2$ & $2$ & $8.0041$  & $10.240$ & $0.057507$ / $8.5429$     & $0.50$ & $0.1947910001230766$ & $9.16\times 10^{-56}$ \\
+$0.95$ & $2$ & $3$ & $14.1426$ & $14.155$ & $0.113962$ / $9.4884$     & $0.90$ & $1.526081195623828\times 10^{-3}$ & $7.83\times 10^{-56}$ \\
+$0.98$ & $4$ & $4$ & $14.6165$ & $18.351$ & $0.159066$ / $12.2865$    & $0.99$ & $2.660177020336483\times 10^{-10}$ & $6.82\times 10^{-54}$ \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+%==============================================================================
+\section{Pauli Subordination Pollard Log-Convexity Proof, 95-Digit \texorpdfstring{$\mustar$}{mu\_*} Solution, and Asymmetric Reduction}
+\label{sec:S4}
+%==============================================================================
+
+\subsection{Exact Analytical Derivative \texorpdfstring{$\kappa_\mu'(x)$}{kappa\_mu'(x)}, Global Subadditivity, and 2D Criticality System}
+
+Recall $\kappa_\mu(x) := \frac{x\,E_{\mu,\mu}(-x)}{E_\mu(-x)}$ for $x > 0$ and $\mu \in (0,1)$, where $f(x) := E_\mu(-x)$ and $g(x) := x E_{\mu,\mu}(-x)$ satisfy $f'(x) = -\frac{1}{\mu} E_{\mu,\mu}(-x) = -\frac{g(x)}{\mu x}$ (directly from differentiating $E_\mu(-x) = \sum_{k=0}^\infty \frac{(-x)^k}{\Gamma(\mu k+1)}$ termwise: $f'(x) = -\sum_{m=0}^\infty \frac{(m+1)(-x)^m}{\Gamma(\mu m + \mu + 1)} = -\frac{1}{\mu}\sum_{m=0}^\infty \frac{(-x)^m}{\Gamma(\mu m+\mu)}$ since $\frac{m+1}{\Gamma(\mu(m+1)+1)} = \frac{1}{\mu\Gamma(\mu(m+1))}$). Differentiating $\kappa_\mu(x) = g(x)/f(x)$ therefore yields the exact analytical identity
+\begin{equation}
+\label{eq:S4_kappa_prime}
+\kappa_\mu'(x)
+= \frac{g'(x)f(x) - g(x)f'(x)}{f(x)^2}
+= \frac{g'(x)}{f(x)} + \frac{\kappa_\mu(x)^2}{\mu x},
+\end{equation}
+where $g'(x) = \sum_{k=0}^\infty \frac{(k+1)(-x)^k}{\Gamma(\mu k + \mu)}$ is evaluated via Hankel contour quadrature (for large $x$) or convergent series (for moderate $x$) at 75- and 95-digit working precision in \texttt{pauli\_hierarchy.py}.
+
+\begin{lemma}[Analytic Global Subadditivity of $\kappa_\mu(x)$ via Pollard Log-Convexity]
+\label{lem:S4_pollard_subadd}
+For every $\mu \in (0,1)$, the secant function $x \mapsto \kappa_\mu(x)/x$ is strictly decreasing on $(0,\infty)$, and consequently $\kappa_\mu$ is strictly subadditive globally on $(0,\infty)$: $\kappa_\mu(x + y) < \kappa_\mu(x) + \kappa_\mu(y)$ for all $x, y > 0$.
+\end{lemma}
+\begin{proof}
+By Pollard's theorem, $E_\mu(-x) = \int_0^\infty \ee^{-rx}\,\dd\nu_\mu(r)$ is the Laplace transform of a positive non-degenerate probability measure $\nu_\mu$ on $(0,\infty)$ for every $\mu \in (0,1)$. By the strict Cauchy--Schwarz inequality,
+\[
+E_\mu(-x)\,E_\mu''(-x) - \big(E_\mu'(-x)\big)^2
+= \left(\int_0^\infty \ee^{-rx}\,\dd\nu_\mu\right)\!\left(\int_0^\infty r^2 \ee^{-rx}\,\dd\nu_\mu\right)
+- \left(\int_0^\infty r\,\ee^{-rx}\,\dd\nu_\mu\right)^2 > 0,
+\]
+so $\frac{\dd^2}{\dd x^2}\ln E_\mu(-x) > 0$ strictly for all $x > 0$. Because $\frac{\kappa_\mu(x)}{x} = \frac{E_{\mu,\mu}(-x)}{E_\mu(-x)} = -\mu\frac{\dd}{\dd x}\ln E_\mu(-x)$, we obtain
+\begin{equation}
+\label{eq:S4_secant_neg}
+\frac{\dd}{\dd x}\!\left(\frac{\kappa_\mu(x)}{x}\right)
+= -\mu\,\frac{\dd^2}{\dd x^2}\ln E_\mu(-x) < 0 \qquad \forall x > 0.
+\end{equation}
+For any $x, y > 0$, strict decreasingness of $\kappa_\mu(r)/r$ gives $\frac{\kappa_\mu(x+y)}{x+y} < \frac{\kappa_\mu(x)}{x}$ and $\frac{\kappa_\mu(x+y)}{x+y} < \frac{\kappa_\mu(y)}{y}$; multiplying by $x$ and $y$ respectively and adding yields $\kappa_\mu(x+y) < \kappa_\mu(x) + \kappa_\mu(y)$.
+\end{proof}
+
+Solving the 2D criticality system $\big(\kappa_\mu(x) - 2\mu,\; \kappa_\mu'(x)\big) = (0, 0)$ via damped Newton iteration yields the following verified constants (75-digit vs.\ 95-digit agreement $|\Delta\mustar| = 3.00\times 10^{-77}$, $|\Delta x_*| = 5.27\times 10^{-77}$, residuals $|\kappa_{\mustar}(x_*)-2\mustar| = 1.82\times 10^{-96}$ and $|\kappa'_{\mustar}(x_*)| = 6.44\times 10^{-98}$):
+\begin{align}
+\mustar &= 0.9260578001565030816497633969467864480351300948087975441\dots, \label{eq:S4_mustar_55} \\
+x_* &= 3.635668751994354499493022977483996490662597272217182041\dots, \label{eq:S4_xstar_55} \\
+x_0(\mustar) &= 1.0820651664731305108854656750543214\dots \qquad (\text{unique root of } \kappa_{\mustar}(x_0) = \mustar), \\
+\inf_{r\in(0,x_0]} \frac{\kappa_{\mustar}(r)}{r} &= \frac{\mustar}{x_0(\mustar)} = 0.855824426152524748843046\dots > \frac{2\mustar}{x_*} = 0.5094291385311227\dots, \\
+L_{\mathrm{down}}(\mustar) &:= \sup_{x > x_*} |\kappa'_{\mustar}(x)| = 0.164220693313629022118786\dots \qquad (\text{at } x_{\mathrm{inf}} = 5.413586022180916\dots).
+\end{align}
+
+\subsection{Complete Asymmetric Reduction Across \texorpdfstring{$\mu \in (1/2, \mustar]$}{mu in (1/2, mu\_*]} (Proposition 7)}
+
+Let $0 \le u = \lambda_y t^\mu \le v = \lambda_z t^\mu$ and $w = \lambda_x t^\mu \in [v-u, v+u]$ be any triangle-valid triple at $\mu \in (1/2, \mustar]$ (under the unimodal profile of $\kappa_\mu$ on $(1/2, \mustar]$ with unique crossing $x_0(\mu)$ of $\mu$ and unique peak $x_{\mathrm{peak}}(\mu) > x_0(\mu)$, consistent with the large-$x$ expansion $\kappa_\mu(x) = \mu[1 - \frac{\Gamma(1-\mu)}{\Gamma(1-2\mu)}x^{-1} + O(x^{-2})] > \mu$). Every case of $\kappa_\mu(u) + \kappa_\mu(v) - \kappa_\mu(w) \ge 0$ is exhausted cleanly:
+\begin{enumerate}[label=(\roman*),leftmargin=1.8em,itemsep=1pt]
+\item \textbf{$u \ge x_0(\mu)$ (hence $v \ge x_0(\mu)$):} $\kappa_\mu(u) \ge \mu$ and $\kappa_\mu(v) \ge \mu$, giving $\kappa_\mu(u) + \kappa_\mu(v) - \kappa_\mu(w) \ge 2\mu - \max_{x>0}\kappa_\mu(x) \ge 0$ analytically for all $\mu \le \mustar$.
+\item \textbf{$u < x_0(\mu)$ and $w \ge v$:} Write $w = v + \delta$ with $0 \le \delta \le u < x_0(\mu) < x_{\mathrm{peak}}(\mu)$. By Lemma~\ref{lem:S4_pollard_subadd} (analytic global subadditivity) and increasing monotonicity on $[0, x_{\mathrm{peak}}(\mu)]$, $\kappa_\mu(w) \le \kappa_\mu(v) + \kappa_\mu(\delta) \le \kappa_\mu(v) + \kappa_\mu(u)$ identically! (If in addition $v \ge x_{\mathrm{peak}}(\mu)$, decreasingness on $[x_{\mathrm{peak}}(\mu), \infty)$ already yields $\kappa_\mu(w) \le \kappa_\mu(v)$ directly.)
+\item \textbf{$u < x_0(\mu)$, $v \le x_{\mathrm{peak}}(\mu)$, and $v - u \le w < v$:} Increasing monotonicity on $[0, x_{\mathrm{peak}}(\mu)]$ gives $\kappa_\mu(w) \le \kappa_\mu(v) < \kappa_\mu(v) + \kappa_\mu(u)$.
+\item \textbf{$u < x_0(\mu)$, $v > x_{\mathrm{peak}}(\mu)$, and $v - u \le w < v$:} Setting $\tilde{w} := \max(w, x_{\mathrm{peak}}(\mu))$ gives $\kappa_\mu(w) \le \kappa_\mu(\tilde{w})$ and $v - \tilde{w} \le v - w \le u$, while Lemma~\ref{lem:S4_pollard_subadd} guarantees $\kappa_\mu(u) \ge (\mu/x_0(\mu))u$ analytically on $(0, x_0(\mu)]$. By the Mean Value Theorem on $[\tilde{w}, v] \subset [x_{\mathrm{peak}}(\mu), \infty)$:
+\[
+\kappa_\mu(w) - \kappa_\mu(v)
+\le \kappa_\mu(\tilde{w}) - \kappa_\mu(v)
+\le L_{\mathrm{down}}(\mu)\,u
+< \frac{\mu}{x_0(\mu)}\,u
+\le \kappa_\mu(u),
+\]
+whenever $L_{\mathrm{down}}(\mu) < \mu/x_0(\mu)$. Table~\ref{tab:S4_margin_sweep} records high-precision Hankel-safe evaluations of $L_{\mathrm{down}}(\mu)$ vs.\ $\mu/x_0(\mu)$ across $\mu \in \{0.60, 0.70, 0.80, 0.85, 0.90, \mustar\}$, confirming a strict $5.2\times$--$214\times$ margin everywhere below $\mustar$, corroborated by exhaustive 3D scans ($7{,}980$ parent triples and $301$ triangle-boundary triples per $\mu$) in \texttt{pauli\_hierarchy.py}.
+\end{enumerate}
+
+\begin{table}[h]
+\centering
+\caption{High-precision verification of the post-peak slope margin $L_{\mathrm{down}}(\mu) := \sup_{x > x_{\mathrm{peak}}(\mu)} |\kappa'_\mu(x)| < \mu/x_0(\mu)$ across $\mu \in (1/2, \mustar]$ (\texttt{asymmetric\_margin\_sweep} in \texttt{pauli\_and\_hierarchy\_summary.json}).}
+\label{tab:S4_margin_sweep}
+\setlength{\tabcolsep}{6pt}
+\begin{tabular}{@{}ccccccc@{}}
+\toprule
+$\mu$ & $x_0(\mu)$ & $x_{\mathrm{peak}}(\mu)$ & $x_{\mathrm{inf}}(\mu)$ & $\mu / x_0(\mu)$ & $L_{\mathrm{down}}(\mu)$ & Safety Ratio $\frac{\mu/x_0}{L_{\mathrm{down}}}$ \\
+\midrule
+$0.60$    & $3.202246$ & $6.553887$ & $9.788792$ & $0.187368$ & $0.000876$ & $213.9\times$ \\
+$0.70$    & $1.799925$ & $3.983261$ & $5.923654$ & $0.388905$ & $0.007934$ & $49.0\times$ \\
+$0.80$    & $1.339930$ & $3.382344$ & $5.042994$ & $0.597046$ & $0.033036$ & $18.1\times$ \\
+$0.85$    & $1.212638$ & $3.349451$ & $5.005555$ & $0.700951$ & $0.061499$ & $11.4\times$ \\
+$0.90$    & $1.120290$ & $3.477304$ & $5.194935$ & $0.803364$ & $0.115152$ & $7.0\times$ \\
+$\mustar$ & $1.082065$ & $3.635669$ & $5.413586$ & $0.855824$ & $0.164221$ & $5.2\times$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+%==============================================================================
+\section{Complete Proofs for the Strict Six-Level Hierarchy and the Level~5 Spohn-Monotone Witness}
+\label{sec:S5}
+%==============================================================================
+
+\subsection{Proof of the Nested Inclusions \texorpdfstring{$\mathrm{SG} \subsetneq \mathrm{CM}_{\mathrm{deph}} \subsetneq \mathrm{CP\text{-}Div} \subsetneq \mathrm{P\text{-}Div} \subsetneq \mathrm{Spohn} \subsetneq \mathrm{CPTP}$}{SG < CM\_deph < CP-Div < P-Div < Spohn < CPTP}}
+
+For continuous one-parameter families of qubit CPTP channels $\{\Phi_t\}_{t\ge 0}$ with $\Phi_0 = \mathrm{id}$ and at least one invariant state $\Phi_t(\rho_*) = \rho_*$:
+\begin{itemize}[leftmargin=1.6em,itemsep=2pt]
+\item $\mathrm{SG} \subseteq \mathrm{CM}_{\mathrm{deph}}$ (on the pure-dephasing/isotropic tier $G(t) = \ee^{-\gamma t}$): $(-1)^n \frac{\dd^n}{\dd t^n}\ee^{-\gamma t} = \gamma^n \ee^{-\gamma t} \ge 0$ for all $n \ge 0, t > 0$.
+\item $\mathrm{CM}_{\mathrm{deph}} \subseteq \mathrm{CP\text{-}Div}$: for a single-axis or isotropic channel with completely monotonic coherence factor $G(t) \in (0,1]$, $(-1)^1\dot{G}(t) \ge 0$ guarantees canonical GKSL rate $\gamma(t) = -\dot{G}(t)/G(t) \ge 0$. \emph{Multi-axis caveat:} componentwise complete monotonicity of Bloch multipliers $(\Lambda_x, \Lambda_y, \Lambda_z)$ does \emph{not} imply CP-divisibility for general Pauli channels, as demonstrated directly by Level~4a (Eternal Pauli, $\Lambda_x=\Lambda_y=\frac{1}{2}(1+\ee^{-2t}), \Lambda_z=\ee^{-2t}$) and Level~4b (Subordinated Pauli at $\mu=0.95$, $\Lambda_k(t) = E_{0.95}(-\lambda_k t^{0.95})$, CM by Pollard's theorem and Bernstein composition).
+\item $\mathrm{CP\text{-}Div} \subseteq \mathrm{P\text{-}Div}$: every completely positive trace-preserving intermediate propagator $\Lambda_{t,s}$ is positive and trace-preserving.
+\item $\mathrm{P\text{-}Div} \subseteq \mathrm{Spohn}$: here $\mathrm{P\text{-}Div}$ is defined strictly as positivity of every trace-preserving intermediate propagator $\Lambda_{t,s}$ (equivalent for invertible maps to biased Helstrom monotonicity~\cite{Wissmann2015PRA,Bae2016PRL}; coinciding with unbiased $\NBLP = 0$ on unital qubit channels and strictly stronger than $\{\NBLP = 0\}$ on non-unital channels). Whenever $\Lambda_{t,s}$ is positive, trace-preserving, and fixes $\rho_*$, the M\"uller-Hermes--Reeb data-processing inequality~\cite{MullerHermes2017AHP} yields $D(\Phi_t(\rho)\parallel\rho_*) = D(\Lambda_{t,s}(\Phi_s(\rho))\parallel\Lambda_{t,s}(\rho_*)) \le D(\Phi_s(\rho)\parallel\rho_*)$ for every initial $\rho$ and all $t \ge s \ge 0$.
+\item $\mathrm{Spohn} \subseteq \mathrm{CPTP}$ holds by definition of the ambient family.
+\end{itemize}
+
+\subsection{Complete Analysis of the Level~5 Witness (\texorpdfstring{$\mathrm{Spohn} \setminus \mathrm{P\text{-}Div}$}{Spohn minus P-Div})}
+
+Let $\mathbf{r}_* = (0, 0, z_*)^\top$ with $z_* = \frac{4}{5}$, $\rho_* = \frac{1}{2}(I + z_*\sigma_z) = \mathrm{diag}(\frac{9}{10}, \frac{1}{10})$, and define the continuous, piecewise-smooth ($C^0$ on $[0,\infty)$, $C^\infty$ on $[0,1)\cup(1,\infty)$) affine Bloch evolution $\mathbf{r}(t) = T(t)\mathbf{r}_0 + (I_3 - T(t))\mathbf{r}_*$:
+\begin{equation}
+\label{eq:S5_level5}
+T(t) = \begin{cases}
+\big(1 - \frac{19}{20}t\big) I_3, & 0 \le t \le 1, \\[4pt]
+\frac{1}{20}\,\ee^{(t-1)K}, & t \ge 1,
+\end{cases}
+\qquad
+K = \begin{pmatrix} -a & 0 & c \\ 0 & -a & 0 \\ 0 & 0 & -b \end{pmatrix},
+\end{equation}
+with $a = \ln 2$, $b = \ln\frac{5}{2}$, and $c = \frac{9}{5}$. We verify all four properties:
+\begin{enumerate}[label=(\roman*),leftmargin=1.8em,itemsep=2pt]
+\item \textbf{Closed-form exponential and forward-invariant contracted ball:} Directly integrating $\dot{\mathbf{r}} = K(\mathbf{r}-\mathbf{r}_*)$ for $\tau = t - 1 \ge 0$ gives
+\begin{equation}
+\label{eq:S5_expK}
+\ee^{\tau K} = \begin{pmatrix}
+\ee^{-a\tau} & 0 & \frac{c}{b-a}(\ee^{-a\tau} - \ee^{-b\tau}) \\
+0 & \ee^{-a\tau} & 0 \\
+0 & 0 & \ee^{-b\tau}
+\end{pmatrix}.
+\end{equation}
+Maximizing $\|\ee^{\tau K}\|_2$ over $\tau \ge 0$ yields $\sup_{\tau\ge 0}\|\ee^{\tau K}\|_2 = 1.038658$ (attained at $\tau = 0.58$). Because every initial Bloch vector satisfies $\|\mathbf{r}_0\|_2 \le 1$, we have $\|\mathbf{r}_0 - \mathbf{r}_*\|_2 \le 1 + \|\mathbf{r}_*\|_2 = 1.8$ (attained at the south pole $\mathbf{r}_0 = (0,0,-1)^\top$). Hence at $t = 1$, $\|\mathbf{r}(1)-\mathbf{r}_*\|_2 = \frac{1}{20}\|\mathbf{r}_0 - \mathbf{r}_*\|_2 \le 0.090$, and for every $t \ge 1$ every evolved trajectory remains confined inside the forward-invariant ball
+\begin{equation}
+\label{eq:S5_inv_ball}
+\|\mathbf{r}(t) - \mathbf{r}_*\|_2 \le \frac{1}{20}\cdot 1.8\,\sup_{\tau\ge 0}\|\ee^{\tau K}\|_2 = 0.093479 < 0.095
+\end{equation}
+(direct optimization over all $\|\mathbf{r}_0\|_2 \le 1$ and $\tau \ge 0$ yields exact maximum distance $0.089991 \le 0.090$ and Bloch norm range $\|\mathbf{r}(t)\|_2 \in [0.7100, 0.8100]$).
+\item \textbf{Analytic Global Complete Positivity (CPTP) for All $t \ge 0$:} On $t \in [0, 1]$, $\Phi_t(\rho_0) = (1 - \frac{19}{20}t)\rho_0 + \frac{19}{20}t\,\rho_*$ is a convex combination of CPTP maps with $\min_{t\in[10^{-3},1]}\lambda_{\min}(J(\Phi_t)) = 4.750\times 10^{-5} > 0$. On $t \ge 1$ ($\tau = t - 1 \ge 0$), write $T(t) = \mathrm{diag}(a(\tau), a(\tau), c(\tau)) + b(\tau)\,E_{13}$ with $a(\tau) = \frac{1}{20}2^{-\tau} \in (0, \frac{1}{20}]$, $c(\tau) = \frac{1}{20}(\frac{5}{2})^{-\tau} \in (0, \frac{1}{20}]$, and $b(\tau) = \frac{1}{20}\frac{9/5}{\ln(5/4)}(2^{-\tau} - (\frac{5}{2})^{-\tau}) \in [0, 0.041277] \subset [0, \frac{1}{20}]$ (attaining its unique maximum at $\tau = \frac{\ln(\ln(5/2)/\ln 2)}{\ln(5/4)} = 1.2464$). With exact fixed-point shift $m_x = -\frac{4}{5}b$ and $m_z = \frac{4}{5}(1-c)$, the real symmetric $4\times 4$ Choi matrix $J(\Phi_t)$ has diagonal entries $s_{00} = (1+m_z+c)/4 \ge 0.45$, $s_{11} = (1-m_z-c)/4 \ge 0.0475$, $s_{22} = (1+m_z-c)/4 \ge 0.4275$, $s_{33} = (1-m_z+c)/4 \ge 0.05$, and only three distinct off-diagonal entries $s_{01} = (m_x+b)/4 = b/20 \in [0, 0.0025]$, $s_{03} = a/2 \in [0, 0.025]$, and $s_{23} = (m_x-b)/4 = -9b/20 \in [-0.0225, 0]$. For every $(a,b,c) \in [0,\frac{1}{20}]^3$, all four Gershgorin margins satisfy $s_{00}-s_{01}-s_{03} \ge 0.4225 > 0$, $s_{11}-s_{01} \ge 0.0450 > 0$, $s_{22}+s_{23} \ge 0.4050 > 0$, and $s_{33}-s_{03}+s_{23} \ge 0.0025 > 0$, yielding an exact sum-of-rank-1 PSD decomposition certifying $J(\Phi_t) \ge 0$ analytically for \emph{all} $t \ge 1$ simultaneously (with $\min_{t\ge 1}\lambda_{\min}(J(\Phi_t)) = 0.04750$, and formally machine-checked across the entire box $[0,\frac{1}{20}]^3$ in Lean~4 Theorem~\leanid{sep\_pdiv\_spohn\_uniform\_cptp}).
+\item \textbf{P-Divisibility Violation (Strict Global BLP Trace-Distance Revival):} The symmetrized generator $K + K^\top$ has largest eigenvalue $\lambda_{\max}(K + K^\top) = +0.20434075 > 0$ with unit eigenvector $\mathbf{u}_{\max} \approx (0.749342, 0, 0.662183)^\top$. Because $\mathbf{c}(t)$ cancels in $\Phi_t(\rho_1 - \rho_2)$, optimizing antipodal pure-state pairs $\pm \mathbf{u}(\theta)$ across the Bloch sphere gives the exact global maximum $\NBLP = 1.93292\times 10^{-3} > 0$ (at polar angle $\theta \approx 0.6075\,\mathrm{rad}$); the interior symmetric pair $\mathbf{r}_{1,2}(0) = \mathbf{r}_* \pm 0.1\,\mathbf{u}_{\max}$ plotted in Fig.~4(b) of the main text already yields $\NBLP^{\mathrm{pair}} = 1.13549\times 10^{-4} > 0$. Breaking unbiased trace-distance contractivity \emph{a fortiori} proves $\Phi_t \notin \mathrm{P\text{-}Div}$.
+\item \textbf{Global Spohn Relative-Entropy Monotonicity for All $\rho_0 \in B_1$ and All $t \ge 0$:}
+On $0 \le s < t \le 1$, set $\lambda := \frac{1-\frac{19}{20}t}{1-\frac{19}{20}s} \in (0,1)$; then $\Phi_t(\rho_0) = \lambda\,\Phi_s(\rho_0) + (1-\lambda)\rho_*$, so joint convexity of quantum relative entropy and $D(\rho_*\parallel\rho_*) = 0$ immediately yield
+\[
+D\big(\Phi_t(\rho_0)\parallel\rho_*\big)
+\le \lambda\,D\big(\Phi_s(\rho_0)\parallel\rho_*\big) + (1-\lambda)\,D(\rho_*\parallel\rho_*)
+= \lambda\,D\big(\Phi_s(\rho_0)\parallel\rho_*\big)
+\le D\big(\Phi_s(\rho_0)\parallel\rho_*\big).
+\]
+On $t \ge 1$, writing $\rho = \frac{1}{2}(I + \mathbf{r}\cdot\boldsymbol{\sigma})$ with $\ln\rho = \frac{1}{2}\ln\!\big(\frac{1-|\mathbf{r}|^2}{4}\big)I + \frac{\operatorname{artanh}|\mathbf{r}|}{|\mathbf{r}|}(\mathbf{r}\cdot\boldsymbol{\sigma})$ and using $\Tr(\dot{\rho}) = 0$ and $\Tr(\sigma_i\sigma_j) = 2\delta_{ij}$, the exact relative-entropy production rate reads
+\begin{equation}
+\label{eq:S5_dD_dt}
+\frac{\dd}{\dd t} D\big(\rho(t)\parallel\rho_*\big)
+= \Tr\Big[\dot{\rho}(t)\big(\ln\rho(t) - \ln\rho_*\big)\Big]
+= \big(\mathbf{r}(t) - \mathbf{r}_*\big)^\top K^\top
+\left(\frac{\operatorname{artanh}|\mathbf{r}(t)|}{|\mathbf{r}(t)|}\mathbf{r}(t)
+- \frac{\operatorname{artanh} z_*}{z_*}\mathbf{r}_*\right).
+\end{equation}
+Linearizing Eq.~\eqref{eq:S5_dD_dt} around $\mathbf{r}_*$ via $\delta := \mathbf{r} - \mathbf{r}_*$ gives the Bogoliubov--Kubo--Mori (BKM) Fisher quadratic form $\frac{\dd D}{\dd t} = \frac{1}{2}\delta^\top(K^\top H_* + H_* K)\delta + O(\|\delta\|_2^3)$, where $H_* = \mathrm{diag}(g_\perp, g_\perp, g_\parallel)$ with $g_\perp = \frac{\operatorname{artanh}(4/5)}{4/5} = \frac{5}{4}\ln 3 \approx 1.373265$ and $g_\parallel = \frac{1}{1 - (4/5)^2} = \frac{25}{9} \approx 2.777778$. The symmetrized BKM flow matrix $M_{\mathrm{BKM}} := K^\top H_* + H_* K$ has strictly negative eigenvalues $\{-6.438050, -1.903750, -0.556204\}$ (Sylvester negative-definiteness interval-certified in Lean~4 Theorem~\leanid{sep\_pdiv\_spohn\_bkm\_vs\_blp}). Nonlinear global optimization of Eq.~\eqref{eq:S5_dD_dt} across the entire forward-invariant ball Eq.~\eqref{eq:S5_inv_ball} confirms strict negativity throughout:
+\begin{itemize}[leftmargin=1.4em,itemsep=1pt]
+\item On the initial pure Bloch sphere $|\mathbf{r}_0| = 1$ at $t = 1^+$: $\max_{|\mathbf{r}_0|=1}\frac{\dd D}{\dd t}(1^+) = -7.2260\times 10^{-5} < 0$.
+\item Across every concentric shell $0 < \|\mathbf{r}-\mathbf{r}_*\|_2 \le 0.095$ (strictly enclosing the entire forward-invariant reachable region $\|\mathbf{r}(t)-\mathbf{r}_*\|_2 \le 0.093479$): $\sup_{0 < \|\mathbf{r}-\mathbf{r}_*\|_2 \le 0.095} \|\mathbf{r}-\mathbf{r}_*\|_2^{-2}\frac{\dd D}{\dd t} = -0.217142 < 0$ and $\max_{\|\mathbf{r}-\mathbf{r}_*\|_2 = 0.095}\frac{\dd D}{\dd t} = -1.9597\times 10^{-3} < 0$.
+\end{itemize}
+Hence $\frac{\dd}{\dd t} D(\Phi_t(\rho_0)\parallel\rho_*) \le 0$ for every initial qubit state $\rho_0 \in B_1$ and every $t \ge 0$, proving $\Phi_t \in \mathrm{Spohn} \setminus \mathrm{P\text{-}Div}$.
+\end{enumerate}
+
+%==============================================================================
+\section{Unitary \texorpdfstring{$N = 1000$}{N = 1000} Friedrichs--Lee Discretization and Continuum Volterra \texorpdfstring{$E_{2-\mu}$}{E\_\{2-mu\}} Derivation}
+\label{sec:S6}
+%==============================================================================
+
+For the single-excitation Friedrichs--Lee Hamiltonian $H = \omega_0|e\rangle\langle e| + \sum_{k=1}^N \omega_k b_k^\dagger b_k + \sum_{k=1}^N g_k(|e\rangle\langle g|b_k + \mathrm{H.c.})$, writing $|\psi(t)\rangle = c(t)|e,\mathrm{vac}\rangle + \sum_{k=1}^N b_k(t)|g, 1_k\rangle$ with $c(0)=1, b_k(0)=0$ yields $\dot{c} = -\ii\omega_0 c - \ii\sum_k g_k b_k$ and $\dot{b}_k = -\ii\omega_k b_k - \ii g_k c$. Integrating $b_k(t) = -\ii g_k\int_0^t \ee^{-\ii\omega_k(t-\tau)} c(\tau)\,\dd\tau$ and passing to the continuum $\sum_k g_k^2 \delta(\omega-\omega_k) \to J(\omega)$ gives the exact Volterra equation
+\begin{equation}
+\label{eq:S6_volterra}
+\dot{c}(t) + \ii\omega_0 c(t) = -\int_0^t \mathcal{K}(t-\tau)\,c(\tau)\,\dd\tau, \qquad
+\mathcal{K}(t) := \int J(\omega)\,\ee^{-\ii\omega t}\,\dd\omega, \qquad
+\tilde{c}(s) = \frac{1}{s + \ii\omega_0 + \tilde{\mathcal{K}}(s)}.
+\end{equation}
+Tracing over the bath yields a generalized amplitude-damping channel on the emitter ($\rho_{ee}(t) = |c(t)|^2\rho_{ee}(0)$, $\rho_{eg}(t) = c(t)\rho_{eg}(0)$), for which any initial state pair with population difference $a \in [-1,1]$ and coherence difference $b \in \mathbb{C}$ ($a^2 + |b|^2 \le 1$) has trace distance $D_{\mathrm{tr}}(t) = \sqrt{a^2|c(t)|^4 + |b|^2|c(t)|^2}$. When $c(t)$ passes through zero (Lorentzian and symmetric broadband baths), antipodal equatorial states ($a=0, |b|=1$, $D_{\mathrm{tr}}=|c(t)|$) are optimal; conversely, when a one-sided bound state traps $|c(t)| > 1/2$, $\frac{\dd}{\dd t}(|c|^2) = 2|c|\frac{\dd|c|}{\dd t} > \frac{\dd|c|}{\dd t}$, so the excited/ground pair $|e\rangle, |g\rangle$ ($a=1, b=0$, $D_{\mathrm{tr}} = |c(t)|^2$) strictly maximizes $\NBLP^{\mathrm{AD}}$ (e.g., $0.2998$ vs.\ $0.2757$ at $(\mu,\omega_0)=(0.50,0)$ and $0.2234$ vs.\ $0.1794$ at $(0.75,0)$, fine grid $\Delta t = 0.002$ on $t \in [0,20]$). For the three bath spectra studied in Section~V of the main text:
+\begin{enumerate}[label=(\roman*),leftmargin=1.8em,itemsep=2pt]
+\item \textbf{Resonant Lorentzian ($J(\omega) = \frac{2g}{\pi[(\omega-\omega_0)^2 + 4g^2]}$, $\omega_0 = 25$):} On $\mathbb{R}$, $\mathcal{K}_{\mathrm{rot}}(t) = \ee^{\ii\omega_0 t}\mathcal{K}(t) = \ee^{-2gt}$, giving $\tilde{\mathcal{K}}_{\mathrm{rot}}(s) = (s+2g)^{-1}$ and $\tilde{c}_{\mathrm{rot}}(s) = [s + (s+2g)^{-1}]^{-1} = \frac{s+2g}{s^2+2gs+1} = \tilde{G}_{1,g}(s)$.
+\item \textbf{One-sided power-law ($J(\omega) = \frac{\eta}{\Gamma(\mu)}\omega^{\mu-1}\ee^{-\omega/\omega_c}$ on $\omega > 0$):} Direct Gamma-function integration gives $\mathcal{K}(t) = \eta(\omega_c^{-1} + \ii t)^{-\mu}$. Because $\int_0^\infty J(\omega)/\omega\,\dd\omega = \infty$ for $\mu \in (0,1)$, the real-frequency self-energy $\Sigma(E) = \int_0^\infty \frac{J(\omega)}{E-\omega}\,\dd\omega$ diverges to $-\infty$ as $E \to 0^-$, guaranteeing a discrete real-frequency bound state $E_0 < 0$ solving $E_0 - \omega_0 = \Sigma(E_0)$ for every $\eta > 0$ and $\omega_0 \in \mathbb{R}$.
+\item \textbf{Symmetric broadband power-law ($J_{\mathrm{sym}}(\omega) = \frac{\eta}{\Gamma(\mu)}|\omega-\omega_0|^{\mu-1}\ee^{-|\omega-\omega_0|/\omega_c}$):} Shifting $\Omega = \omega - \omega_0$ gives $\mathcal{K}_{\mathrm{rot}}(t) = 2\eta\operatorname{Re}[(\omega_c^{-1} + \ii t)^{-\mu}] \xrightarrow{\omega_c\to\infty} 2\eta\cos(\frac{\pi\mu}{2}) t^{-\mu}$. Its Laplace transform is $\tilde{\mathcal{K}}_{\mathrm{rot}}(s) = c_{\mathrm{sym}} s^{\mu-1}$ with $c_{\mathrm{sym}} := 2\eta\cos(\frac{\pi\mu}{2})\Gamma(1-\mu)$, yielding
+\begin{equation}
+\label{eq:S6_E2minusmu}
+\tilde{c}_{\mathrm{rot}}(s) = \frac{1}{s + c_{\mathrm{sym}} s^{\mu-1}} = \frac{s^{(2-\mu)-1}}{s^{2-\mu} + c_{\mathrm{sym}}}
+\quad\Longleftrightarrow\quad
+c_{\mathrm{rot}}(t) = E_{2-\mu}\!\left(-c_{\mathrm{sym}}\,t^{2-\mu}\right),
+\end{equation}
+which has Mittag-Leffler index $2-\mu \in (1,2)$ (oscillatory with coherent revivals $\NBLP > 0$), contrasting sharply with inverse-stable operational-time subordination $E_\mu(-c t^\mu)$ (index $\mu \in (0,1)$, completely monotonic with $\NBLP = 0$).
+\end{enumerate}
+Numerically, \texttt{friedrichs\_lee\_unitary.py} discretizes $J(\omega)$ via $N = 1000$ non-uniform Gauss--Legendre quadrature nodes ($\omega_k$ mapped smoothly across the support with algebraic grading near $\omega = 0$ and $\omega = \omega_0$, weights $g_k = \sqrt{w_k J(\omega_k)}$), eliminating uniform-grid Poincar\'e recurrences across $t \in [0,20]$ while conserving unitarity to $\| |\psi(t)\rangle \|_2 = 1 \pm 10^{-15}$.
+
+%==============================================================================
+\section{Complete Lean 4.16.0 Formal Verification Ledger and Reproducibility Protocol}
+\label{sec:S7}
+%==============================================================================
+
+The self-contained Lean~4.16.0 formalization \leanid{Paper2\_Subordination.lean} (2,935 lines, zero Mathlib dependencies, zero \texttt{sorry}/\texttt{admit}, zero \texttt{native\_decide}/\texttt{Lean.ofReduceBool}, zero custom axioms across all 150 explicitly authored public theorems, 46 private lemmas, and 211 public kernel \texttt{thmInfo} entries---of which 165 depend on zero axioms---logged in \texttt{axioms\_check.txt}) verifies all 28 headline \texttt{\#print axioms} theorems (14/28 axiom-free):
+{\raggedright
+\begin{enumerate}[leftmargin=1.8em,itemsep=2pt]
+\item \textbf{Universal algebraic, spectral, and functional-positivity theorems over arbitrary fields (18 headline theorems, 14 axiom-free):}
+\leanid{hankel\_propagator\_numerator\_im}, \leanid{hankel\_derivative\_numerator\_im}, \leanid{cm\_spectral\_numerator\_pos}, \leanid{single\_sign\_change\_below}, \leanid{single\_sign\_change\_above}, \leanid{overdamped\_no\_nonneg\_real\_root}, \leanid{real\_root\_strictly\_neg}, \leanid{underdamped\_no\_real\_roots}, \leanid{underdamped\_complex\_root\_char}, \leanid{pole\_wedge\_boundary\_iff}, \leanid{subdiffusive\_always\_pole\_free}, \leanid{single\_sign\_change\_integral\_pos} (via admissible linear subspace \leanid{Adm} in \leanid{PositiveLinearFunctional}), \leanid{geom\_partial\_sum\_identity}, \leanid{geom\_tail\_archimedean\_bound}, \leanid{pauli\_choi\_fujiwara\_algoet}, \leanid{pauli\_subordination\_cp\_sufficient} ($[0,\infty)$ domain), \leanid{gRatCP\_strictly\_decreasing}, \leanid{choiNonUnital\_isPSD\_of\_gershgorin}.
+\item \textbf{Kernel-certified rational interval and continuum-box theorems over \leanid{Q} (4 headline theorems):}
+\leanid{pauli\_subord\_mu095\_counterexample}, \leanid{sep\_pdiv\_spohn\_fixed\_point}, \leanid{sep\_pdiv\_spohn\_uniform\_cptp} (all $(a,b,c) \in [0,1/20]^3$, certifying Level~5 CPTP globally for all $t \ge 1$), \leanid{sep\_pdiv\_spohn\_bkm\_vs\_blp}.
+\item \textbf{Exact single-point rational separation witnesses over \leanid{Q} (6 headline theorems):}
+\leanid{sep\_semigroup\_cm}, \leanid{sep\_cm\_cpdiv\_midpoint\_nonconvex}, \leanid{sep\_cpdiv\_pdiv\_eternal}, \leanid{sep\_pdiv\_spohn\_phi1\_cptp}, \leanid{sep\_pdiv\_spohn\_phi2\_cptp} (exact fixed-point $m_z = 479/625 = 0.7664$), \leanid{sep\_spohn\_cptp}.
+\end{enumerate}
+}
+
+\textbf{Reproducibility Commands:} From the unzipped submission archive root:
+\begin{verbatim}
+cd lean_proofs && lake build DiamondProofs.Paper2_Subordination
+python3 src/save_crosscheck_50digit.py
+python3 src/resolve_phase_boundary.py
+python3 src/find_mu_zero_boundary.py
+python3 src/verify_finiteness_and_asymptotics.py
+python3 src/pauli_hierarchy.py
+python3 src/generate_hierarchy_data.py
+python3 src/friedrichs_lee_unitary.py
+python3 src/generate_figure_trajectories.py
+python3 src/make_figures.py
+tectonic paper2_subordinated_oqs.tex && tectonic supplement_paper2.tex
+\end{verbatim}
+
+{\raggedright
+\begin{thebibliography}{9}
+\bibitem{Wissmann2015PRA}
+S.~Wi\ss mann, H.-P.~Breuer, and B.~Vacchini,
+Generalized trace-distance measure connecting quantum and classical non-Markovianity,
+\emph{Phys.\ Rev.\ A} \textbf{92}, 042108 (2015),
+\href{https://doi.org/10.1103/PhysRevA.92.042108}{doi:10.1103/PhysRevA.92.042108}.
+
+\bibitem{Bae2016PRL}
+J.~Bae and D.~Chru\'sci\'nski,
+Operational characterization of divisibility of dynamical maps,
+\emph{Phys.\ Rev.\ Lett.} \textbf{117}, 050403 (2016),
+\href{https://doi.org/10.1103/PhysRevLett.117.050403}{doi:10.1103/PhysRevLett.117.050403}.
+
+\bibitem{MullerHermes2017AHP}
+A.~M\"uller-Hermes and D.~Reeb,
+Monotonicity of the quantum relative entropy under positive maps,
+\emph{Ann.\ Henri Poincar\'e} \textbf{18}, 1777--1788 (2017),
+\href{https://doi.org/10.1007/s00023-017-0550-9}{doi:10.1007/s00023-017-0550-9}.
+\end{thebibliography}
+}
+
+\end{document}
+
