@@ -1,7 +1,7 @@
 {
   "title": "Code, Data, and Lean 4.16.0 Formalization: Exact Analytic Phase Boundary Between Complete Monotonicity, Completely Positive Divisibility, and Information Backflow in Time-Subordinated Open Quantum Dynamics",
   "upload_type": "software",
-  "description": "Complete reproducible computational suite (55- to 95-digit 2D Newton solvers for the Hankel branch-cut phase boundary, zero-crossing curve, and Pauli subordination threshold mu_*; six-level divisibility/Spohn hierarchy witnesses; N=1000 non-uniform Gauss-Legendre unitary Friedrichs-Lee simulations), verified RFC-8259 datasets, publication figures, RevTeX 4-2 manuscript and Supplemental Material, and self-contained pure Lean 4.16.0 formalization (2,935 lines, zero Mathlib, zero sorry, zero custom axioms, 14/28 headline theorems axiom-free).",
+  "description": "Complete reproducible computational suite (55- to 95-digit 2D Newton solvers for the Hankel branch-cut phase boundary, zero-crossing curve, and Pauli subordination threshold mu_*; six-level divisibility/Spohn hierarchy witnesses; N=1000 non-uniform Gauss-Legendre unitary Friedrichs-Lee simulations), verified RFC-8259 datasets, publication figures, LaTeX manuscript and Supplemental Material, and self-contained pure Lean 4.16.0 formalization (2,935 lines, zero Mathlib, zero sorry, zero custom axioms, 14/28 headline theorems axiom-free).",
   "creators": [
     {
       "name": "Singh, Mehardeep",

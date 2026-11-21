@@ -6,11 +6,11 @@
 [![Axiom-Free Theorems](https://img.shields.io/badge/Headline%20Zero--Axiom-14%20%2F%2028-success.svg)](lean_proofs/axioms_check.txt)
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](requirements.txt)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Target Journal](https://img.shields.io/badge/Manuscript-Phys.%20Rev.%20A-005A9C.svg)](manuscript/paper2_subordinated_oqs.pdf)
+[![Manuscript](https://img.shields.io/badge/Manuscript-PDF-005A9C.svg)](manuscript/paper2_subordinated_oqs.pdf)
 
-Official research repository containing the **pure Lean 4.16.0 formal proofs**, **55- to 95-digit arbitrary-precision contour & 2D Newton solvers**, **Pauli subordination & 6-level hierarchy witnesses**, **$N = 1000$ unitary Friedrichs–Lee simulations**, **strict RFC-8259 datasets**, **vector figures**, and **RevTeX 4-2 manuscript & Supplemental Material** for:
+Official research repository containing the **pure Lean 4.16.0 formal proofs**, **55- to 95-digit arbitrary-precision contour & 2D Newton solvers**, **Pauli subordination & 6-level hierarchy witnesses**, **$N = 1000$ unitary Friedrichs–Lee simulations**, **strict RFC-8259 datasets**, **vector figures**, and **journal-agnostic LaTeX manuscript & Supplemental Material** for:
 
-> **Mehardeep Singh**, *"Exact Analytic Phase Boundary Between Complete Monotonicity, Completely Positive Divisibility, and Information Backflow in Time-Subordinated Open Quantum Dynamics"*, Sri Chaitanya Educational Institutions (submitted to *Physical Review A*).
+> **Mehardeep Singh**, *"Exact Analytic Phase Boundary Between Complete Monotonicity, Completely Positive Divisibility, and Information Backflow in Time-Subordinated Open Quantum Dynamics"*, Sri Chaitanya Educational Institutions.
 
 ---
 
@@ -94,7 +94,7 @@ subordinated-oqs-phase-boundary/
 ├── data/                              # 10 verified strict RFC-8259 JSON & CSV datasets
 ├── figures/                           # Figures 1–5 (vector PDF + high-DPI PNG)
 ├── manuscript/
-│   ├── paper2_subordinated_oqs.tex/.pdf # Main manuscript (RevTeX 4-2, aps,pra,twocolumn; 16 pages)
+│   ├── paper2_subordinated_oqs.tex/.pdf # Main manuscript (journal-agnostic preprint; 16 pages)
 │   └── supplement_paper2.tex/.pdf       # Supplemental Material (complete proofs & 55-digit tables; 11 pages)
 └── scripts/
     └── ci_audit.py                    # End-to-end Lean + RFC-8259 JSON + mpmath unit test verifier
@@ -158,13 +158,13 @@ tectonic supplement_paper2.tex
 If you use this code, dataset, or Lean 4 formalization, please cite the accompanying manuscript (see also [`CITATION.cff`](CITATION.cff)):
 
 ```bibtex
-@article{Singh2026SubordinatedOQS,
+@misc{Singh2026SubordinatedOQS,
   author  = {Singh, Mehardeep},
   title   = {Exact Analytic Phase Boundary Between Complete Monotonicity,
              Completely Positive Divisibility, and Information Backflow
              in Time-Subordinated Open Quantum Dynamics},
-  journal = {Submitted to Physical Review A},
   year    = {2026},
+  note    = {Manuscript, numerical dataset, and pure Lean 4.16.0 formalization},
   url     = {https://github.com/Mehardeep-Singh-GG/subordinated-oqs-phase-boundary}
 }
 ```
