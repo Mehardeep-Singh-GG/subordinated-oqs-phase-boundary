@@ -37,3 +37,10 @@ jobs:
 
       - name: Run full Lean 4 build, axiom audit, and dataset verification
         run: python3 scripts/ci_audit.py
+
+      - name: Fresh kernel environment replay via lean4checker (v4.16.0)
+        run: |
+          git clone --depth 1 --branch v4.16.0 https://github.com/leanprover/lean4checker.git /tmp/lean4checker
+          (cd /tmp/lean4checker && lake build)
+          cd lean_proofs
+          lake env /tmp/lean4checker/.lake/build/bin/lean4checker -v --fresh DiamondProofs.Paper2_Subordination

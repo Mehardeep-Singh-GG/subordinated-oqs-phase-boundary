@@ -110,7 +110,7 @@ The formalization in [`lean_proofs/DiamondProofs/Paper2_Subordination.lean`](lea
   - **18 universal algebraic & functional theorems** over arbitrary fields (14 axiom-free, including Hankel numerators, overdamped & underdamped root classification, `PositiveLinearFunctional` with admissible linear subspace `Adm`, geometric series, Fujiwara–Algoet Choi diagonalization, $[0,\infty)$-domain Pauli criterion, and universal Gershgorin sum-of-rank-1 $4\times 4$ non-unital Choi PSD `choiNonUnital_isPSD_of_gershgorin`).
   - **4 rational box / interval certificates** over `Q` (including `sep_pdiv_spohn_uniform_cptp`, certifying global CPTP of Level 5 for *all* $t \ge 1$ simultaneously across $[0, 1/20]^3$, and `sep_pdiv_spohn_bkm_vs_blp`).
   - **6 exact single-point rational separation witnesses** over `Q`.
-- **Axiom Purity:** Audited via `Lean.collectAxioms` in [`lean_proofs/axioms_check.txt`](lean_proofs/axioms_check.txt) — `DISALLOWED_AXIOMS = 0`, **14 / 28 headline theorems depend on zero axioms `[]`**.
+- **Axiom Purity & Kernel Replay:** Audited via `Lean.collectAxioms` in [`lean_proofs/axioms_check.txt`](lean_proofs/axioms_check.txt) — `DISALLOWED_AXIOMS = 0`, **14 / 28 headline theorems depend on zero axioms `[]`** — and replayed from an empty environment in GitHub Actions CI via `lean4checker -v --fresh` (v4.16.0) to rule out environment tampering.
 
 ### Quick Verification
 ```bash
